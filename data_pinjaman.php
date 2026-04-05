@@ -7,62 +7,38 @@ $query = mysqli_query($koneksi, "
     SELECT p.*, a.nama 
     FROM tb_pinjaman_ramdan p
     JOIN tb_anggota_ramdan a ON p.id_anggota = a.id_anggota
-    ORDER BY p.id_pinjaman ASC
+    ORDER BY p.id_pinjaman DESC
 ");
+
+// Panggil Header
+include 'header.php';
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Data Pinjaman Koperasi</title>
-    <style>
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        table, th, td { border: 1px solid black; }
-        th, td { padding: 10px; text-align: left; }
-        th { background-color: #f8d7da; } /* Warna merah muda biar beda sama simpanan */
-        .btn { padding: 5px 10px; text-decoration: none; border: 1px solid black; background: #eee; color: black; }
-        .badge { padding: 3px 8px; border-radius: 5px; color: white; }
-        .bg-warning { background-color: orange; }
-        .bg-success { background-color: green; }
-        .bg-primary { background-color: blue; }
-    </style>
-</head>
-<body>
-
     <h2>Data Pinjaman Anggota</h2>
-    
-    <?php if($_SESSION['role'] == 'Admin') { ?>
-        <a href="dashboard_admin.php" class="btn">Kembali ke Dashboard</a>
-    <?php } else { ?>
-        <a href="dashboard_petugas.php" class="btn">Kembali ke Dashboard</a>
-    <?php } ?>
-
-    <br><br>
-    <a href="tambah_pinjaman.php" class="btn">+ Ajukan Pinjaman Baru</a>
+    <a href="tambah_pinjaman.php" class="btn" style="margin-bottom: 15px;">+ Ajukan Pinjaman Baru</a>
 
     <table>
         <thead>
             <tr>
                 <th>No</th>
                 <th>Nama Anggota</th>
-                <th>Jumlah Pinjaman</th>
+                <th>Jml Pinjaman</th>
                 <th>Bunga</th>
                 <th>Lama</th>
                 <th>Total Pinjaman (Hutang)</th>
                 <th>Tanggal</th>
                 <th>Status</th>
-                <th>aksi</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
             <?php 
             $no = 1;
             while($data = mysqli_fetch_assoc($query)) { 
-                // Pewarnaan status biar keren
+                // Pewarnaan status
                 $warna_status = 'bg-warning';
                 if($data['status_pinjaman'] == 'Disetujui') $warna_status = 'bg-primary';
                 if($data['status_pinjaman'] == 'Lunas') $warna_status = 'bg-success';
-                
             ?>
             <tr>
                 <td><?php echo $no++; ?></td>
@@ -91,5 +67,7 @@ $query = mysqli_query($koneksi, "
             <?php } ?>
         </tbody>
     </table>
+
+</div>
 </body>
 </html>
