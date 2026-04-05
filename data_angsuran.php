@@ -16,6 +16,7 @@ include 'header.php';
 
     <h2>Data Pembayaran Angsuran</h2>
     <a href="tambah_angsuran.php" class="btn" style="margin-bottom: 15px;">+ Catat Pembayaran Angsuran</a>
+    <a href="cetak_angsuran.php" target="_blank" class="btn btn-warning" style="margin-left: 10px;">🖨️ Cetak Laporan</a>
 
     <table>
         <thead>

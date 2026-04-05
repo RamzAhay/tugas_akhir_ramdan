@@ -11,6 +11,7 @@ include 'header.php';
     <h2>Data Anggota Koperasi</h2>
     
     <a href="tambah_anggota.php" class="btn" style="margin-bottom: 15px;">+ Tambah Anggota Baru</a>
+    <a href="cetak_anggota.php" target="_blank" class="btn btn-warning" style="margin-left: 10px;">🖨️ Cetak Laporan</a>
 
     <table>
         <thead>

@@ -15,6 +15,7 @@ include 'header.php';
 
     <h2>Data Simpanan Anggota</h2>
     <a href="tambah_simpanan.php" class="btn" style="margin-bottom: 15px;">+ Catat Simpanan Baru</a>
+    <a href="cetak_simpanan.php" target="_blank" class="btn btn-warning" style="margin-left: 10px;">🖨️ Cetak Laporan</a>
 
     <table>
         <thead>
