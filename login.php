@@ -77,7 +77,7 @@
         <h2>Koperasi Ramdan</h2>
         <p>Silakan masuk ke akun Anda</p>
 
-        <?php 
+        <?php
         if(isset($_GET['pesan'])){
             if($_GET['pesan'] == "gagal"){
                 echo "<div class='alert alert-danger'>⚠️ Login gagal! Username atau Password salah.</div>";
@@ -89,7 +89,7 @@
         }
         ?>
 
-        <form action="" method="POST">
+        <form action="proses_login.php" method="POST">
             <div class="input-group">
                 <label>Username</label>
                 <input type="text" name="username" placeholder="Masukkan username Anda..." required autocomplete="off">
