@@ -11,7 +11,7 @@ $data_simpanan = mysqli_fetch_assoc($query_simpanan);
 $query_pinjaman = mysqli_query($koneksi, "SELECT SUM(jumlah_pinjaman) as total_pinjaman FROM tb_pinjaman_ramdan");
 $data_pinjaman = mysqli_fetch_assoc($query_pinjaman);
 
-// Panggil Header di sini!
+// Panggil Header
 include 'header.php';
 ?>
 

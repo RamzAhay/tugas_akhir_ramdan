@@ -2,10 +2,9 @@
 include 'auth.php';
 include 'koneksi.php';
 
-// Menangkap ID dari URL
 $id = $_GET['id'];
 
-// Mengambil data anggota berdasarkan ID
+// Mengambil data anggota
 $query = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan WHERE id_anggota='$id'");
 $data = mysqli_fetch_assoc($query);
 ?>

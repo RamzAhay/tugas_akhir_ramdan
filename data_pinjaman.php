@@ -36,7 +36,7 @@ include 'header.php';
             <?php 
             $no = 1;
             while($data = mysqli_fetch_assoc($query)) { 
-                // Pewarnaan status
+                // warna status
                 $warna_status = 'bg-warning';
                 if($data['status_pinjaman'] == 'Disetujui') $warna_status = 'bg-primary';
                 if($data['status_pinjaman'] == 'Lunas') $warna_status = 'bg-success';
@@ -52,7 +52,7 @@ include 'header.php';
                 <td><span class="badge <?php echo $warna_status; ?>"><?php echo $data['status_pinjaman']; ?></span></td>
                 <td>
                     <?php 
-                    // Tombol ACC hanya muncul kalau statusnya masih 'Diajukan' dan yang login adalah Admin
+                    // Tombol ACC 
                     if($data['status_pinjaman'] == 'Diajukan' && $_SESSION['role'] == 'Admin') { ?>
                         <a href="acc_pinjaman.php?id=<?php echo $data['id_pinjaman']; ?>" 
                            onclick="return confirm('Apakah kamu yakin ingin menyetujui pinjaman ini?')" 

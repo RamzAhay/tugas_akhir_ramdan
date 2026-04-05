@@ -2,7 +2,6 @@
 include 'auth.php';
 include 'koneksi.php';
 
-// Ambil semua data anggota untuk ditampilkan di pilihan (dropdown)
 $query_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER BY nama ASC");
 ?>
 

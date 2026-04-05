@@ -29,7 +29,7 @@ $query_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER B
         </select><br><br>
 
         <label>Jumlah Pinjaman (Rp):</label><br>
-        <input type="number" name="jumlah_pinjaman" placeholder="Contoh: 1000000" required><br><br>
+        <input type="number" name="jumlah_pinjaman" required><br><br>
 
         <label>Bunga (%):</label><br>
         <input type="number" step="0.01" name="bunga" value="5" readonly><br><br>

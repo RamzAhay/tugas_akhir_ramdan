@@ -3,7 +3,6 @@ include 'auth.php';
 include 'koneksi.php';
 require('fpdf/fpdf.php'); 
 
-// Pakai 'P' (Portrait / Berdiri) karena kolomnya sedikit
 $pdf = new FPDF('P','mm','A4');
 $pdf->AddPage();
 

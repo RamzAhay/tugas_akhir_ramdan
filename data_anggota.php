@@ -4,7 +4,7 @@ include 'koneksi.php';
 
 $query = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER BY id_anggota DESC");
 
-// Panggil Header!
+// Panggil Header
 include 'header.php';
 ?>
 

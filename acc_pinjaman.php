@@ -2,7 +2,7 @@
 include 'auth.php';
 include 'koneksi.php';
 
-// Pastikan hanya Admin yang bisa mengakses file ini secara langsung
+// biar admin yang bisa akses halaman ini, bukan petugas
 if($_SESSION['role'] != 'Admin') {
     echo "Anda tidak memiliki akses!";
     exit;
