@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 05, 2026 at 09:29 AM
+-- Generation Time: Apr 05, 2026 at 10:17 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,8 @@ CREATE TABLE `tb_anggota_ramdan` (
 --
 
 INSERT INTO `tb_anggota_ramdan` (`id_anggota`, `nama`, `alamat`, `no_hp`, `tanggal_daftar`) VALUES
-(1, 'batosano', 'sangkur', '089765876542', '2026-04-05');
+(1, 'batosano', 'sangkur', '089765876542', '2026-04-05'),
+(2, 'alek', 'permana', '08974224678', '2026-04-05');
 
 -- --------------------------------------------------------
 
@@ -62,7 +63,9 @@ CREATE TABLE `tb_angsuran_ramdan` (
 
 INSERT INTO `tb_angsuran_ramdan` (`id_angsuran`, `id_pinjaman`, `jumlah_bayar`, `sisa_pinjaman`, `tanggal_bayar`) VALUES
 (1, 1, 500000.00, 550000.00, '2026-04-05'),
-(2, 1, 550000.00, 0.00, '2026-04-05');
+(2, 1, 550000.00, 0.00, '2026-04-05'),
+(3, 2, 250000.00, 275000.00, '2026-04-05'),
+(4, 2, 275000.00, 0.00, '2026-04-05');
 
 -- --------------------------------------------------------
 
@@ -86,7 +89,8 @@ CREATE TABLE `tb_pinjaman_ramdan` (
 --
 
 INSERT INTO `tb_pinjaman_ramdan` (`id_pinjaman`, `id_anggota`, `jumlah_pinjaman`, `bunga`, `lama_pinjaman`, `total_pinjaman`, `status_pinjaman`, `tanggal_pinjaman`) VALUES
-(1, 1, 1000000.00, 5.00, 12, 1050000.00, 'Lunas', '2026-04-05');
+(1, 1, 1000000.00, 5.00, 12, 1050000.00, 'Lunas', '2026-04-05'),
+(2, 2, 500000.00, 5.00, 2, 525000.00, 'Lunas', '2026-04-05');
 
 -- --------------------------------------------------------
 
@@ -126,7 +130,8 @@ CREATE TABLE `tb_simpanan_ramdan` (
 --
 
 INSERT INTO `tb_simpanan_ramdan` (`id_simpanan`, `id_anggota`, `jenis_simpanan`, `jumlah`, `tanggal`) VALUES
-(1, 1, 'Pokok', 50000.00, '2026-04-05');
+(1, 1, 'Pokok', 50000.00, '2026-04-05'),
+(2, 2, 'Pokok', 50000.00, '2026-04-05');
 
 -- --------------------------------------------------------
 
@@ -203,19 +208,19 @@ ALTER TABLE `tb_user_ramdan`
 -- AUTO_INCREMENT for table `tb_anggota_ramdan`
 --
 ALTER TABLE `tb_anggota_ramdan`
-  MODIFY `id_anggota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_anggota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tb_angsuran_ramdan`
 --
 ALTER TABLE `tb_angsuran_ramdan`
-  MODIFY `id_angsuran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_angsuran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tb_pinjaman_ramdan`
 --
 ALTER TABLE `tb_pinjaman_ramdan`
-  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tb_role_ramdan`
@@ -227,7 +232,7 @@ ALTER TABLE `tb_role_ramdan`
 -- AUTO_INCREMENT for table `tb_simpanan_ramdan`
 --
 ALTER TABLE `tb_simpanan_ramdan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tb_user_ramdan`
