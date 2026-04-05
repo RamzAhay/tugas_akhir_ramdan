@@ -16,6 +16,7 @@ include 'header.php';
 
     <h2>Data Pinjaman Anggota</h2>
     <a href="tambah_pinjaman.php" class="btn" style="margin-bottom: 15px;">+ Ajukan Pinjaman Baru</a>
+    <a href="cetak_pinjaman.php" target="_blank" class="btn btn-warning" style="margin-bottom: 15px; margin-left: 10px;">🖨️ Cetak Laporan</a>
 
     <table>
         <thead>
