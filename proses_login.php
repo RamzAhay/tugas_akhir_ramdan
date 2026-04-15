@@ -2,42 +2,49 @@
 session_start();
 include 'koneksi.php';
 
-$username = mysqli_real_escape_string($koneksi, $_POST['username']);
-$password = mysqli_real_escape_string($koneksi, $_POST['password']);
+// Menangkap data yang dikirim dari form login
+$username = $_POST['username'];
+$password = $_POST['password'];
 
-// Query cek user
-$query = "SELECT * FROM tb_user_ramdan WHERE username='$username' AND password='$password'";
-$login = mysqli_query($koneksi, $query);
+// 1. Menggunakan Prepared Statement untuk MENCEGAH SQL Injection
+// Kerangka query disiapkan tanpa memasukkan variabel secara langsung
+$stmt = $koneksi->prepare("SELECT * FROM tb_user_ramdan WHERE username = ? AND password = ?");
 
-if (!$login) {
-    die("Query Error: " . mysqli_error($koneksi));
-}
+// 2. Menghubungkan variabel dengan query (s = string, s = string)
+$stmt->bind_param("ss", $username, $password);
 
-$cek = mysqli_num_rows($login);
+// 3. Menjalankan query
+$stmt->execute();
 
-if($cek > 0){
-    $data = mysqli_fetch_assoc($login);
+// 4. Mengambil hasil dari eksekusi query
+$result = $stmt->get_result();
 
-    // Simpan data ke session
-    $_SESSION['username'] = $data['username'];
-    $_SESSION['nama']     = $data['nama'];
+// Menghitung jumlah data yang ditemukan
+$cek = $result->num_rows;
+
+if ($cek > 0) {
+    // Jika data ditemukan, ambil datanya
+    $data = $result->fetch_assoc();
     
-    // Perhatikan bagian id_role ini:
-    // Berdasarkan data kamu: 1 = Admin, 2 = Petugas
-    if($data['id_role'] == 1){
-        $_SESSION['role'] = "Admin"; // Kita set teks agar sinkron dengan auth.php
+    // Simpan data ke dalam session
+    $_SESSION['username'] = $data['username'];
+    $_SESSION['role'] = $data['role']; // Asumsi nama kolomnya adalah 'role', bisa juga 'level'
+    $_SESSION['status'] = "login";
+    
+    // Cek hak akses/role (silakan sesuaikan nama kolomnya jika di databasemu menggunakan 'level')
+    if ($data['role'] == "admin") {
         header("location:dashboard_admin.php");
-        exit();
-    } else if($data['id_role'] == 2){
-        $_SESSION['role'] = "Petugas";
+    } else if ($data['role'] == "petugas") {
         header("location:dashboard_petugas.php");
-        exit();
     } else {
-        header("location:login.php?pesan=gagal");
-        exit();
+        // Jika tidak ada role yang cocok, lempar ke admin sebagai default
+        header("location:dashboard_admin.php");
     }
 } else {
+    // Jika username/password salah, kembalikan ke halaman login dengan pesan error
     header("location:login.php?pesan=gagal");
-    exit();
 }
+
+// Tutup koneksi agar server tidak berat
+$stmt->close();
 ?>

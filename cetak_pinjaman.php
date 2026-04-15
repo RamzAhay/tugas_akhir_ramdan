@@ -10,13 +10,10 @@ $pdf->AddPage();
 // --- HEADER LAPORAN ---
 $pdf->SetFont('Arial','B',16);
 $pdf->Cell(277,10,'KOPERASI SIMPAN PINJAM RAMDAN',0,1,'C'); 
-
 $pdf->SetFont('Arial','B',12);
 $pdf->Cell(277,10,'Laporan Data Pinjaman Anggota',0,1,'C');
-
 $pdf->SetFont('Arial','',10);
-$pdf->Cell(277,5,'Jl. Contoh Alamat No. 123, Kota, Provinsi | Telp: 0812-3456-7890',0,1,'C');
-
+$pdf->Cell(190,5,'Jl. Permana No. 67, Kota Cimahi, Provinsi Jawa Barat | Telp: 0812-3456-7890',0,1,'C');
 $pdf->Line(10, 35, 287, 35); 
 $pdf->Ln(10);
 
