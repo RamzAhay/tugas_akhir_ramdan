@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <?php
 include 'role_petugas.php';
 include 'koneksi.php'; 

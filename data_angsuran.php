@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <?php
 include 'auth.php';
 include 'koneksi.php';
