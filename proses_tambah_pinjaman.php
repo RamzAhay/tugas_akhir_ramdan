@@ -1,30 +1,53 @@
 <?php
-include 'auth.php';
+session_start();
 include 'koneksi.php';
 
-$id_anggota      = $_POST['id_anggota'];
-$jumlah_pinjaman = $_POST['jumlah_pinjaman'];
-$bunga           = $_POST['bunga'];
-$lama_pinjaman   = $_POST['lama_pinjaman'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // 1. Ambil data dari form
+    $id_anggota      = $_POST['id_anggota'];
+    $jumlah_pinjaman = $_POST['jumlah_pinjaman'];
+    $bunga           = $_POST['bunga'];
+    $lama_pinjaman   = $_POST['lama_pinjaman'];
+    
+    // Set tanggal hari ini sebagai tanggal pinjam
+    $tgl_pinjam      = date('Y-m-d'); 
 
-// PERHITUNGAN MATEMATIKA:
-// Hitung nominal bunga dari persen
-$nominal_bunga = $jumlah_pinjaman * ($bunga / 100);
+    // 2. HITUNG TOTAL SIMPANAN ANGGOTA
+    // (SUDAH DIPERBAIKI: Menggunakan kolom 'jumlah' untuk tb_simpanan_ramdan)
+    $query_simpanan = mysqli_query($koneksi, "SELECT SUM(jumlah) AS total_simpanan FROM tb_simpanan_ramdan WHERE id_anggota = '$id_anggota'");
+    $data_simpanan = mysqli_fetch_assoc($query_simpanan);
+    
+    // Jika data simpanan kosong, set jadi 0
+    $total_simpanan = $data_simpanan['total_simpanan'] ? $data_simpanan['total_simpanan'] : 0;
 
-// Total hutang = Pinjaman awal + nominal bunga
-$total_pinjaman = $jumlah_pinjaman + $nominal_bunga;
+    // 3. TENTUKAN ATURAN MAKSIMAL PINJAMAN
+    // Koperasi mengizinkan pinjaman maksimal 3x lipat dari total simpanan
+    $pengali = 3; 
+    $max_pinjaman = $total_simpanan * $pengali;
 
-$tanggal = date('Y-m-d');
-$status = 'Diajukan'; // Default status saat baru input
-
-$query = mysqli_query($koneksi, "INSERT INTO tb_pinjaman_ramdan 
-                                 (id_anggota, jumlah_pinjaman, bunga, lama_pinjaman, total_pinjaman, status_pinjaman, tanggal_pinjaman) 
-                                 VALUES 
-                                 ('$id_anggota', '$jumlah_pinjaman', '$bunga', '$lama_pinjaman', '$total_pinjaman', '$status', '$tanggal')");
-
-if ($query) {
-    header("Location: data_pinjaman.php");
-} else {
-    echo "Gagal mengajukan pinjaman: " . mysqli_error($koneksi);
+    // 4. VALIDASI PENGAJUAN PINJAMAN
+    if ($jumlah_pinjaman > $max_pinjaman) {
+        // Jika jumlah pinjaman melebih batas, batalkan dan tampilkan pesan error
+        echo "<script>
+                alert('GAGAL! Maksimal pinjaman untuk anggota ini adalah Rp " . number_format($max_pinjaman, 0, ',', '.') . "\\n(Total Simpanannya saat ini: Rp " . number_format($total_simpanan, 0, ',', '.') . ")');
+                window.location.href='tambah_pinjaman.php';
+              </script>";
+    } else {
+        // Jika memenuhi syarat, proses data ke database
+        $query_insert = "INSERT INTO tb_pinjaman_ramdan (id_anggota, jumlah_pinjaman, bunga, lama_pinjaman, tgl_pinjam, status_pinjaman) 
+                         VALUES ('$id_anggota', '$jumlah_pinjaman', '$bunga', '$lama_pinjaman', '$tgl_pinjam', 'Belum Lunas')";
+        
+        if (mysqli_query($koneksi, $query_insert)) {
+            echo "<script>
+                    alert('Data Pinjaman berhasil ditambahkan!');
+                    window.location.href='data_pinjaman.php';
+                  </script>";
+        } else {
+            echo "<script>
+                    alert('Terjadi kesalahan saat menyimpan ke database!');
+                    window.location.href='tambah_pinjaman.php';
+                  </script>";
+        }
+    }
 }
 ?>
