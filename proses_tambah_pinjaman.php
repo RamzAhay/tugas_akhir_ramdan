@@ -9,6 +9,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $bunga           = $_POST['bunga'];
     $lama_pinjaman   = $_POST['lama_pinjaman'];
     
+    // --- PERBAIKAN: HITUNG TOTAL PINJAMAN OTOMATIS (Mencegah Angka 0) ---
+    // Asumsi nilai $bunga adalah persen (%). Misal 2%.
+    $nominal_bunga = ($jumlah_pinjaman * $bunga) / 100; 
+    
+    // (Opsional) Jika Koperasi kamu pakai sistem Bunga dikali Bulan, ubah rumusnya jadi ini:
+    // $nominal_bunga = (($jumlah_pinjaman * $bunga) / 100) * $lama_pinjaman;
+    
+    $total_pinjaman = $jumlah_pinjaman + $nominal_bunga;
+
     // Set tanggal hari ini sebagai tanggal pinjam
     $tgl_pinjam      = date('Y-m-d'); 
 
@@ -32,9 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 window.location.href='tambah_pinjaman.php';
               </script>";
     } else {
-        // Jika memenuhi syarat, proses data ke database
-        $query_insert = "INSERT INTO tb_pinjaman_ramdan (id_anggota, jumlah_pinjaman, bunga, lama_pinjaman, tgl_pinjam, status_pinjaman) 
-                         VALUES ('$id_anggota', '$jumlah_pinjaman', '$bunga', '$lama_pinjaman', '$tgl_pinjam', 'Belum Lunas')";
+        // --- PERBAIKAN QUERY INSERT (Memasukkan total_pinjaman & mengubah kolom status) ---
+        // Jika tampilan aksinya masih blank, ganti tulisan 'Belum Lunas' menjadi 'Menunggu ACC' tergantung kodingan awalmu.
+        $query_insert = "INSERT INTO tb_pinjaman_ramdan (id_anggota, jumlah_pinjaman, bunga, lama_pinjaman, total_pinjaman, tanggal_pinjaman, status_pinjaman) 
+                         VALUES ('$id_anggota', '$jumlah_pinjaman', '$bunga', '$lama_pinjaman', '$total_pinjaman', '$tgl_pinjam', 'Diajukan')";
         
         if (mysqli_query($koneksi, $query_insert)) {
             echo "<script>
