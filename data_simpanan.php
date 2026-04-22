@@ -4,37 +4,32 @@ include 'koneksi.php';
 include 'header.php'; 
 ?>
 
-<style>
-    .card-custom { border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }
-    .card-header-custom { background-color: #f8f9fc; border-bottom: 2px solid #eaecf4; }
-    .table-custom th { background-color: #4e73df; color: #ffffff; text-align: center; vertical-align: middle; }
-    .table-custom td { vertical-align: middle; }
-    .td-center { text-align: center; }
-    .td-right { text-align: right; font-weight: 600; }
-    .total-saldo { color: #1cc88a; font-weight: bold; }
-</style>
+<div class="container-fluid">
 
-<div class="container-fluid mt-4">
-    <div class="card card-custom mb-4">
-        <div class="card-header card-header-custom py-3 d-flex justify-content-between align-items-center">
-            <h5 class="m-0 font-weight-bold text-primary">Data Rekap Simpanan</h5>
-            <div>
-                <a href="tambah_simpanan.php" class="btn btn-primary btn-sm shadow-sm">Tambah</a>
-                <a href="cetak_simpanan.php" target="_blank" class="btn btn-success btn-sm shadow-sm">Cetak PDF</a>
-            </div>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Data Simpanan Anggota</h1>
+        <div>
+            <a href="tambah_simpanan.php" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Tambah Simpanan</a>
+            <a href="cetak_simpanan.php" target="_blank" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-print fa-sm text-white-50"></i> Cetak PDF</a>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Rekap Total Simpanan per Anggota</h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive" style="overflow-x: auto;">
-                <table class="table table-bordered table-hover table-custom" width="100%" cellspacing="0">
-                    <thead>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="bg-primary text-white text-center">
                         <tr>
-                            <th>No</th>
+                            <th width="5%">No</th>
                             <th>Nama Anggota</th>
-                            <th>Pokok</th>
-                            <th>Wajib</th>
-                            <th>Sukarela</th>
+                            <th>Total Pokok</th>
+                            <th>Total Wajib</th>
+                            <th>Total Sukarela</th>
                             <th>Total Keseluruhan</th>
-                            <th>Aksi</th>
+                            <th width="15%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,14 +50,18 @@ include 'header.php';
                         while ($data = mysqli_fetch_assoc($query)) {
                         ?>
                         <tr>
-                            <td class="td-center"><?php echo $no++; ?></td>
-                            <td><strong><?php echo htmlspecialchars($data['nama']); ?></strong></td>
-                            <td class="td-right">Rp <?php echo number_format($data['total_pokok'] ?? 0, 0, ',', '.'); ?></td>
-                            <td class="td-right">Rp <?php echo number_format($data['total_wajib'] ?? 0, 0, ',', '.'); ?></td>
-                            <td class="td-right">Rp <?php echo number_format($data['total_sukarela'] ?? 0, 0, ',', '.'); ?></td>
-                            <td class="td-right total-saldo">Rp <?php echo number_format($data['total_simpanan'] ?? 0, 0, ',', '.'); ?></td>
-                            <td class="td-center">
-                                <a href="riwayat_simpanan.php?id=<?php echo $data['id_anggota']; ?>" class="btn btn-info btn-sm">Riwayat</a>
+                            <td class="text-center align-middle"><?php echo $no++; ?></td>
+                            <td class="align-middle font-weight-bold"><?php echo htmlspecialchars($data['nama']); ?></td>
+                            <td class="text-right align-middle">Rp <?php echo number_format($data['total_pokok'] ?? 0, 0, ',', '.'); ?></td>
+                            <td class="text-right align-middle">Rp <?php echo number_format($data['total_wajib'] ?? 0, 0, ',', '.'); ?></td>
+                            <td class="text-right align-middle">Rp <?php echo number_format($data['total_sukarela'] ?? 0, 0, ',', '.'); ?></td>
+                            <td class="text-right align-middle font-weight-bold text-success">
+                                Rp <?php echo number_format($data['total_simpanan'] ?? 0, 0, ',', '.'); ?>
+                            </td>
+                            <td class="text-center align-middle">
+                                <a href="riwayat_simpanan.php?id=<?php echo $data['id_anggota']; ?>" class="btn btn-info btn-sm shadow-sm">
+                                    <i class="fas fa-history"></i> Riwayat
+                                </a>
                             </td>
                         </tr>
                         <?php } ?>
@@ -71,9 +70,6 @@ include 'header.php';
             </div>
         </div>
     </div>
-</div>
 
-<?php 
-// Panggil penutup dari file footer yang baru saja kita buat
-include 'footer.php'; 
-?>
+</div>
+<?php include 'footer.php'; ?>

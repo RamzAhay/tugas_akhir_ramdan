@@ -14,32 +14,28 @@ $data_anggota = mysqli_fetch_assoc($query_anggota);
 $nama_anggota = $data_anggota['nama'] ?? 'Tidak Diketahui';
 ?>
 
-<style>
-    .card-history { border: none; width: 1000px; border-radius: 8px; border-left: 4px solid #36b9cc; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }
-    .table-history th { background-color: #f8f9fc; text-align: center; }
-    .td-center { text-align: center; vertical-align: middle; }
-    .badge-simpanan { padding: 5px 10px; border-radius: 4px; font-weight: bold; }
-    .bg-pokok { background-color: #e74a3b; color: white; }
-    .bg-wajib { background-color: #f6c23e; color: black; }
-    .bg-sukarela { background-color: #1cc88a; color: white; }
-</style>
+<div class="container-fluid">
 
-<div class="container-fluid mt-4">
-    <a href="data_simpanan.php" class="btn btn-secondary btn-sm mb-3">Kembali</a>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Riwayat Simpanan Anggota</h1>
+        <a href="data_simpanan.php" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali
+        </a>
+    </div>
 
-    <div class="card card-history mb-4">
+    <div class="card shadow mb-4 border-left-info">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-info">Riwayat Transaksi: <?php echo htmlspecialchars($nama_anggota); ?></h6>
+            <h6 class="m-0 font-weight-bold text-info">Buku Transaksi: <?php echo htmlspecialchars($nama_anggota); ?></h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive" style="overflow-x: auto;">
-                <table class="table table-bordered table-hover table-history" width="100%" cellspacing="0">
-                    <thead>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" width="100%" cellspacing="0">
+                    <thead class="bg-light text-center">
                         <tr>
-                            <th>No</th>
-                            <th>Tanggal Transaksi</th>
-                            <th>Jenis Simpanan</th>
-                            <th>Nominal (Rp)</th>
+                            <th width="10%">No</th>
+                            <th width="25%">Tanggal Transaksi</th>
+                            <th width="30%">Jenis Simpanan</th>
+                            <th width="35%">Nominal (Rp)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,29 +50,31 @@ $nama_anggota = $data_anggota['nama'] ?? 'Tidak Diketahui';
                         if (mysqli_num_rows($query_riwayat) > 0) {
                             while ($riwayat = mysqli_fetch_assoc($query_riwayat)) {
                                 $jenis = ucfirst(strtolower($riwayat['jenis_simpanan']));
-                                $badge_class = 'bg-secondary';
-                                if ($jenis == 'Pokok') $badge_class = 'bg-pokok';
-                                elseif ($jenis == 'Wajib') $badge_class = 'bg-wajib';
-                                elseif ($jenis == 'Sukarela') $badge_class = 'bg-sukarela';
                         ?>
                         <tr>
-                            <td class="td-center"><?php echo $no++; ?></td>
-                            <td class="td-center"><?php echo date('d-m-Y', strtotime($riwayat['tanggal'])); ?></td>
-                            <td class="td-center">
-                                <span class="badge-simpanan <?php echo $badge_class; ?>"><?php echo $jenis; ?></span>
+                            <td class="text-center align-middle"><?php echo $no++; ?></td>
+                            <td class="text-center align-middle"><?php echo date('d-m-Y', strtotime($riwayat['tanggal'])); ?></td>
+                            <td class="text-center align-middle">
+                                <?php if ($jenis == 'Pokok'): ?>
+                                    <div style="background-color: #e74a3b; color: #ffffff; padding: 6px 0; border-radius: 5px; font-size: 13px; font-weight: bold; width: 90px; margin: 0 auto; text-align: center;">Pokok</div>
+                                <?php elseif ($jenis == 'Wajib'): ?>
+                                    <div style="background-color: #f6c23e; color: #000000; padding: 6px 0; border-radius: 5px; font-size: 13px; font-weight: bold; width: 90px; margin: 0 auto; text-align: center;">Wajib</div>
+                                <?php else: ?>
+                                    <div style="background-color: #1cc88a; color: #ffffff; padding: 6px 0; border-radius: 5px; font-size: 13px; font-weight: bold; width: 90px; margin: 0 auto; text-align: center;">Sukarela</div>
+                                <?php endif; ?>
                             </td>
-                            <td class="text-right font-weight-bold">
+                            <td class="text-right align-middle font-weight-bold">
                                 Rp <?php echo number_format($riwayat['jumlah'], 0, ',', '.'); ?>
                             </td>
                         </tr>
                         <?php } } else { ?>
-                            <tr><td colspan="4" class="text-center text-danger">Belum ada riwayat simpanan.</td></tr>
+                            <tr><td colspan="4" class="text-center text-danger font-weight-bold py-4">Belum ada riwayat simpanan untuk anggota ini.</td></tr>
                         <?php } ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-</div>
 
+</div>
 <?php include 'footer.php'; ?>
