@@ -13,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tgl_pinjam      = date('Y-m-d'); 
 
     // 2. HITUNG TOTAL SIMPANAN ANGGOTA
-    // (SUDAH DIPERBAIKI: Menggunakan kolom 'jumlah' untuk tb_simpanan_ramdan)
     $query_simpanan = mysqli_query($koneksi, "SELECT SUM(jumlah) AS total_simpanan FROM tb_simpanan_ramdan WHERE id_anggota = '$id_anggota'");
     $data_simpanan = mysqli_fetch_assoc($query_simpanan);
     

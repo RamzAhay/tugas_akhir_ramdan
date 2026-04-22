@@ -39,7 +39,14 @@ $query_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER B
         <input type="number" step="0.01" name="bunga" value="5" readonly><br><br>
 
         <label>Lama Pinjaman (Bulan):</label><br>
-        <input type="number" name="lama_pinjaman" required><br><br>
+            <select name="lama_pinjaman" required class="form-control" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 15px;">
+                <option value="" disabled selected>-- Pilih Lama Pinjaman --</option>
+                <?php 
+                for($i = 1; $i <= 12; $i++){
+                    echo "<option value='$i'>$i Bulan</option>";
+                }
+                ?>
+            </select><br>
 
         <button type="submit">Ajukan Pinjaman</button>
     </form>

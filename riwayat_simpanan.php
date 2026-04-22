@@ -14,6 +14,10 @@ $id_anggota = $_GET['id'];
 $query_anggota = mysqli_query($koneksi, "SELECT nama FROM tb_anggota_ramdan WHERE id_anggota = '$id_anggota'");
 $data_anggota = mysqli_fetch_assoc($query_anggota);
 $nama_anggota = $data_anggota['nama'] ?? 'Tidak Diketahui';
+
+// Ambil filter tanggal dari GET
+$tanggal_mulai = isset($_GET['tanggal_mulai']) ? mysqli_real_escape_string($koneksi, $_GET['tanggal_mulai']) : '';
+$tanggal_akhir = isset($_GET['tanggal_akhir']) ? mysqli_real_escape_string($koneksi, $_GET['tanggal_akhir']) : '';
 ?>
 
 <div class="container-fluid">
@@ -30,6 +34,24 @@ $nama_anggota = $data_anggota['nama'] ?? 'Tidak Diketahui';
             <h6 class="m-0 font-weight-bold text-info">Buku Transaksi: <?php echo htmlspecialchars($nama_anggota); ?></h6>
         </div>
         <div class="card-body">
+            <!-- Form Filter Tanggal -->
+            <form method="GET" action="" class="mb-4">
+                <input type="hidden" name="id" value="<?php echo htmlspecialchars($id_anggota); ?>">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="tanggal_mulai">Tanggal Mulai:</label>
+                        <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control" value="<?php echo htmlspecialchars($tanggal_mulai); ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="tanggal_akhir">Tanggal Akhir:</label>
+                        <input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" value="<?php echo htmlspecialchars($tanggal_akhir); ?>">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary mr-2">Filter</button>
+                        <a href="?id=<?php echo htmlspecialchars($id_anggota); ?>" class="btn btn-secondary">Reset</a>
+                    </div>
+                </div>
+            </form>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover" width="100%" cellspacing="0">
                     <thead class="bg-light text-center">
@@ -46,6 +68,7 @@ $nama_anggota = $data_anggota['nama'] ?? 'Tidak Diketahui';
                         $query_riwayat = mysqli_query($koneksi, "
                             SELECT * FROM tb_simpanan_ramdan 
                             WHERE id_anggota = '$id_anggota' 
+                            " . (!empty($tanggal_mulai) && !empty($tanggal_akhir) ? "AND tanggal BETWEEN '$tanggal_mulai' AND '$tanggal_akhir'" : "") . "
                             ORDER BY tanggal DESC
                         ");
 
