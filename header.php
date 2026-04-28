@@ -30,6 +30,7 @@ $role_label     = $is_admin ? '' : '(Petugas)';
                 <a href="data_anggota.php">Data Anggota</a>
                 <a href="data_simpanan.php">Simpanan</a>
                 <a href="data_pinjaman.php">Pinjaman</a>
+                <a href="riwayat_pinjaman.php" class="nav-link">Riwayat Pinjaman</a>
                 <a href="data_angsuran.php">Angsuran</a>
                 <a href="logout.php" class="btn-logout">Logout</a>
             </div>

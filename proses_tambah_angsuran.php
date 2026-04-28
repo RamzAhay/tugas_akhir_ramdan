@@ -16,6 +16,20 @@ $query_sudah_bayar = mysqli_query($koneksi, "SELECT SUM(jumlah_bayar) as total_d
 $data_sudah_bayar  = mysqli_fetch_assoc($query_sudah_bayar);
 $total_dibayar     = $data_sudah_bayar['total_dibayar'] ? $data_sudah_bayar['total_dibayar'] : 0;
 
+// ==============================================================
+// BLOK VALIDASI ANTI-KELEBIHAN BAYAR (TAMBAHAN BARU)
+// ==============================================================
+$sisa_hutang_sebelumnya = $total_hutang - $total_dibayar;
+
+if ($jumlah_bayar > $sisa_hutang_sebelumnya) {
+    echo "<script>
+            alert('GAGAL! Nominal bayar (Rp " . number_format($jumlah_bayar,0,',','.') . ") melebihi sisa hutang (Rp " . number_format($sisa_hutang_sebelumnya,0,',','.') . "). Sisa hutang tidak boleh minus!');
+            window.location.href = 'tambah_angsuran.php';
+          </script>";
+    exit(); // Proses dimatikan di sini agar query insert di bawah tidak dijalankan
+}
+// ==============================================================
+
 // 3. Hitung sisa pinjaman setelah pembayaran ini
 $sisa_pinjaman = $total_hutang - ($total_dibayar + $jumlah_bayar);
 
