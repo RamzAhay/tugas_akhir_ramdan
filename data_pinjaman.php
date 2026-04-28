@@ -12,7 +12,6 @@ $query = mysqli_query($koneksi, "
     WHERE p.status_pinjaman != 'Lunas'
 ");
 
-// Panggil Header
 include 'header.php';
 ?>
 
@@ -28,7 +27,7 @@ include 'header.php';
                 <th>Jml Pinjaman</th>
                 <th>Bunga</th>
                 <th>Lama</th>
-                <th>Total Pinjaman (Hutang)</th>
+                <th>Total Pinjaman</th>
                 <th>Tanggal</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -38,10 +37,22 @@ include 'header.php';
             <?php 
             $no = 1;
             while($data = mysqli_fetch_assoc($query)) { 
-                // --- PERBAIKAN WARNA STATUS ---
-                $warna_status = 'bg-warning'; // Default warna kuning untuk 'Menunggu ACC'
-                if($data['status_pinjaman'] == 'Belum Lunas') $warna_status = 'bg-primary'; // Warna biru
-                if($data['status_pinjaman'] == 'Lunas') $warna_status = 'bg-success'; // Warna hijau
+                $status_db = $data['status_pinjaman'];
+                
+                // --- TRIK UI: UBAH TAMPILAN TANPA UBAH DATABASE ---
+                $teks_status = $status_db;
+                $warna_status = 'bg-secondary'; // Default
+                
+                if($status_db == 'Diajukan') {
+                    $teks_status = 'Menunggu ACC';
+                    $warna_status = 'bg-warning';
+                } else if ($status_db == 'Disetujui') {
+                    $teks_status = 'Sedang Diangsur';
+                    $warna_status = 'bg-primary';
+                } else if ($status_db == 'Lunas') {
+                    $teks_status = 'Lunas';
+                    $warna_status = 'bg-success';
+                }
             ?>
             <tr>
                 <td><?php echo $no++; ?></td>
@@ -51,20 +62,18 @@ include 'header.php';
                 <td><?php echo $data['lama_pinjaman']; ?> Bln</td>
                 <td><strong>Rp <?php echo number_format($data['total_pinjaman'], 0, ',', '.'); ?></strong></td>
                 <td><?php echo date('d-m-Y', strtotime($data['tanggal_pinjaman'])); ?></td>
-                <td><span class="badge <?php echo $warna_status; ?>"><?php echo $data['status_pinjaman']; ?></span></td>
+                <td><span class="badge <?php echo $warna_status; ?>"><?php echo $teks_status; ?></span></td>
                 <td>
                     <?php 
-                    // --- PERBAIKAN TOMBOL AKSI ACC --- 
-                    if($data['status_pinjaman'] == 'Menunggu ACC' && $_SESSION['role'] == 'Admin') { ?>
+                    // Logika Tombol Aksi
+                    if($status_db == 'Diajukan' && $_SESSION['role'] == 'Admin') { ?>
                         <a href="acc_pinjaman.php?id=<?php echo $data['id_pinjaman']; ?>" 
                            onclick="return confirm('Apakah kamu yakin ingin menyetujui pinjaman ini?')" 
                            class="btn" style="background-color: #0d6efd; color: white;">ACC Pinjaman</a>
-                    <?php } else if ($data['status_pinjaman'] == 'Menunggu ACC' && $_SESSION['role'] != 'Admin') {
-                        echo "Menunggu ACC Admin"; // Tampil kalau Petugas yang login
-                    } else if ($data['status_pinjaman'] == 'Belum Lunas') {
-                        echo "Sedang Diangsur"; // Muncul setelah di-ACC
-                    } else if ($data['status_pinjaman'] == 'Lunas') {
-                        echo "Selesai";
+                    <?php } else if ($status_db == 'Diajukan' && $_SESSION['role'] != 'Admin') {
+                        echo "Menunggu ACC Admin"; 
+                    } else if ($status_db == 'Disetujui') {
+                        echo "Sedang Diangsur"; 
                     } else {
                         echo "-";
                     }

@@ -14,8 +14,7 @@ if($_SESSION['role'] != 'Admin') {
 
 $id = $_GET['id'];
 
-// --- UBAH STATUS JADI 'Belum Lunas' AGAR PINJAMAN AKTIF ---
-$query = mysqli_query($koneksi, "UPDATE tb_pinjaman_ramdan SET status_pinjaman='Belum Lunas' WHERE id_pinjaman='$id'");
+$query = mysqli_query($koneksi, "UPDATE tb_pinjaman_ramdan SET status_pinjaman='Disetujui' WHERE id_pinjaman='$id'");
 
 if ($query) {
     echo "<script>
