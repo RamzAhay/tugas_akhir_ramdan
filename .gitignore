@@ -1,0 +1,13 @@
+# Mengabaikan folder library FPDF karena ukurannya besar
+fpdf/
+
+# Mengabaikan file konfigurasi database jika bersifat rahasia
+# config.php
+
+# Mengabaikan file log atau temporary
+*.log
+.DS_Store
+Thumbs.db
+
+# Mengabaikan folder vendor jika nanti kamu pakai Composer
+vendor/
