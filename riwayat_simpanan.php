@@ -69,7 +69,7 @@ $tanggal_akhir = isset($_GET['tanggal_akhir']) ? mysqli_real_escape_string($kone
                             SELECT * FROM tb_simpanan_ramdan 
                             WHERE id_anggota = '$id_anggota' 
                             " . (!empty($tanggal_mulai) && !empty($tanggal_akhir) ? "AND tanggal BETWEEN '$tanggal_mulai' AND '$tanggal_akhir'" : "") . "
-                            ORDER BY tanggal DESC
+                            ORDER BY tanggal ASC
                         ");
 
                         if (mysqli_num_rows($query_riwayat) > 0) {

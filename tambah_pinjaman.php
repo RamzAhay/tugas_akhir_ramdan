@@ -1,25 +1,17 @@
 <?php
 include 'auth.php';
 include 'koneksi.php';
+include 'header.php';
 
 // Ambil daftar anggota
 $query_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER BY nama ASC");
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajukan Pinjaman</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
-</head>
-<body>
-
-    <h2>Form Pengajuan Pinjaman</h2>
-    <a href="data_pinjaman.php">Kembali ke Data Pinjaman</a>
-    <br><br>
+<div class="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Form Pengajuan Pinjaman</h2>
+        <a href="data_pinjaman.php" class="btn btn-outline-secondary">← Kembali</a>
+    </div>
 
     <form method="POST" action="proses_tambah_pinjaman.php">
         <label>Pilih Anggota:</label><br>
