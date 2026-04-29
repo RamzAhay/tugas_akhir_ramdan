@@ -11,7 +11,8 @@ $role_label     = $is_admin ? '' : '(Petugas)';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Koperasi Ramdan</title>
-    <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
 </head>
 <body class="role-<?php echo strtolower($is_admin ? 'admin' : 'petugas'); ?>">
