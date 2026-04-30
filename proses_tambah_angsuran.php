@@ -2,49 +2,62 @@
 include 'auth.php';
 include 'koneksi.php';
 
-$id_pinjaman  = $_POST['id_pinjaman'];
-$jumlah_bayar = $_POST['jumlah_bayar'];
-$tanggal      = date('Y-m-d');
+if (isset($_POST['submit'])) {
+    // Menangkap data dari form di Canvas
+    $id_pinjaman = mysqli_real_escape_string($koneksi, $_POST['id_pinjaman']);
+    $tanggal_bayar = mysqli_real_escape_string($koneksi, $_POST['tanggal_bayar']);
+    $jumlah_bayar = mysqli_real_escape_string($koneksi, $_POST['jumlah_bayar']); // Ini angka polos dari hidden input
 
-// 1. Ambil data total pinjaman dari tabel pinjaman
-$query_pinjaman = mysqli_query($koneksi, "SELECT total_pinjaman FROM tb_pinjaman_ramdan WHERE id_pinjaman='$id_pinjaman'");
-$data_pinjaman  = mysqli_fetch_assoc($query_pinjaman);
-$total_hutang   = $data_pinjaman['total_pinjaman'];
-
-// 2. Hitung berapa total yang sudah dibayar sebelumnya untuk pinjaman ini
-$query_sudah_bayar = mysqli_query($koneksi, "SELECT SUM(jumlah_bayar) as total_dibayar FROM tb_angsuran_ramdan WHERE id_pinjaman='$id_pinjaman'");
-$data_sudah_bayar  = mysqli_fetch_assoc($query_sudah_bayar);
-$total_dibayar     = $data_sudah_bayar['total_dibayar'] ? $data_sudah_bayar['total_dibayar'] : 0;
-
-// ==============================================================
-// BLOK VALIDASI ANTI-KELEBIHAN BAYAR (TAMBAHAN BARU)
-// ==============================================================
-$sisa_hutang_sebelumnya = $total_hutang - $total_dibayar;
-
-if ($jumlah_bayar > $sisa_hutang_sebelumnya) {
-    echo "<script>
-            alert('GAGAL! Nominal bayar (Rp " . number_format($jumlah_bayar,0,',','.') . ") melebihi sisa hutang (Rp " . number_format($sisa_hutang_sebelumnya,0,',','.') . "). Sisa hutang tidak boleh minus!');
-            window.location.href = 'tambah_angsuran.php';
-          </script>";
-    exit(); // Proses dimatikan di sini agar query insert di bawah tidak dijalankan
-}
-// ==============================================================
-
-// 3. Hitung sisa pinjaman setelah pembayaran ini
-$sisa_pinjaman = $total_hutang - ($total_dibayar + $jumlah_bayar);
-
-// 4. Masukkan data pembayaran ke tabel angsuran
-$query_insert = mysqli_query($koneksi, "INSERT INTO tb_angsuran_ramdan (id_pinjaman, jumlah_bayar, sisa_pinjaman, tanggal_bayar) 
-                                        VALUES ('$id_pinjaman', '$jumlah_bayar', '$sisa_pinjaman', '$tanggal')");
-
-if ($query_insert) {
-    // 5. CEK APAKAH SUDAH LUNAS?
-    if ($sisa_pinjaman <= 0) {
-        // Update status pinjaman jadi Lunas
-        mysqli_query($koneksi, "UPDATE tb_pinjaman_ramdan SET status_pinjaman='Lunas' WHERE id_pinjaman='$id_pinjaman'");
+    // 1. Ambil data sisa pinjaman saat ini sebelum dibayar
+    $query_cek = mysqli_query($koneksi, "SELECT sisa_pinjaman FROM tb_pinjaman_ramdan WHERE id_pinjaman = '$id_pinjaman'");
+    $data_pinjaman = mysqli_fetch_assoc($query_cek);
+    
+    if (!$data_pinjaman) {
+        echo "<script>alert('Data pinjaman tidak ditemukan!'); window.location='data_angsuran.php';</script>";
+        exit();
     }
-    header("Location: data_angsuran.php");
+
+    $sisa_lama = $data_pinjaman['sisa_pinjaman'];
+
+    // 2. Hitung sisa pinjaman baru
+    $sisa_baru = $sisa_lama - $jumlah_bayar;
+
+    // Validasi keamanan: Sisa tidak boleh minus
+    if ($sisa_baru < 0) {
+        echo "<script>alert('Gagal! Jumlah bayar melebihi sisa hutang.'); window.history.back();</script>";
+        exit();
+    }
+
+    // 3. Simpan data ke tabel angsuran
+    // Kolom disesuaikan: id_pinjaman, tanggal_bayar, jumlah_bayar (Tanpa metode_bayar)
+    $sql_ins = "INSERT INTO tb_angsuran_ramdan (id_pinjaman, tanggal_bayar, jumlah_bayar) 
+                VALUES ('$id_pinjaman', '$tanggal_bayar', '$jumlah_bayar')";
+    
+    $query_ins = mysqli_query($koneksi, $sql_ins);
+
+    if ($query_ins) {
+        // 4. Update sisa pinjaman di tabel pinjaman (Logika Utama)
+        // Jika sisa baru adalah 0 atau kurang, status otomatis jadi 'Lunas'
+        $status_baru = ($sisa_baru <= 0) ? 'Lunas' : 'Disetujui';
+        
+        $sql_upd = "UPDATE tb_pinjaman_ramdan SET 
+                    sisa_pinjaman = '$sisa_baru', 
+                    status_pinjaman = '$status_baru' 
+                    WHERE id_pinjaman = '$id_pinjaman'";
+        
+        $query_upd = mysqli_query($koneksi, $sql_upd);
+
+        if ($query_upd) {
+            echo "<script>alert('Pembayaran Berhasil! Sisa pinjaman diperbarui.'); window.location='data_angsuran.php';</script>";
+        } else {
+            echo "Gagal Update Sisa Pinjaman: " . mysqli_error($koneksi);
+        }
+    } else {
+        echo "Gagal Simpan Riwayat Angsuran: " . mysqli_error($koneksi);
+    }
 } else {
-    echo "Gagal memproses angsuran: " . mysqli_error($koneksi);
+    // Jika diakses tanpa submit form
+    header("Location: tambah_angsuran.php");
+    exit();
 }
 ?>

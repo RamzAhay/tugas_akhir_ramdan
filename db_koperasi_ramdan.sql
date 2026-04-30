@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 29, 2026 at 10:13 AM
+-- Generation Time: Apr 30, 2026 at 04:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -218,7 +218,7 @@ ALTER TABLE `tb_angsuran_ramdan`
 -- AUTO_INCREMENT for table `tb_pinjaman_ramdan`
 --
 ALTER TABLE `tb_pinjaman_ramdan`
-  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tb_role_ramdan`
