@@ -1,50 +1,72 @@
 <?php
 include 'auth.php';
 include 'koneksi.php';
-include 'header.php';
 
-$query_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER BY nama ASC");
+// Pastikan hanya Petugas atau Admin yang bisa menambah simpanan
+if ($_SESSION['role'] == 'Anggota') {
+    header("Location: dashboard_admin.php");
+    exit();
+}
+
+include 'header.php';
 ?>
 
 <div class="content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Catat Transaksi Simpanan Baru</h2>
-        <a href="data_simpanan.php" class="btn btn-outline-secondary">← Kembali</a>
+    <div class="form-container" style="max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+        <h2 class="mb-4">Setor Simpanan Tunai</h2>
+        <p class="text-muted">Gunakan form ini untuk mencatat setoran uang dari anggota koperasi.</p>
+        <hr class="mb-4">
+
+        <form action="proses_tambah_simpanan.php" method="POST">
+            
+            <div class="form-group mb-4">
+                <label for="id_anggota" class="text-dark font-weight-bold mb-2">Pilih Anggota</label>
+                <select name="id_anggota" id="id_anggota" class="form-control form-control-lg" required>
+                    <option value="">-- Silakan Pilih Anggota --</option>
+                    <?php
+                    /**
+                     * URUTAN: Berdasarkan id_anggota ASC
+                     * TAMPILAN: Hanya menampilkan nama
+                     */
+                    $q_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER BY id_anggota ASC");
+                    while ($d = mysqli_fetch_assoc($q_anggota)) {
+                        echo "<option value='".$d['id_anggota']."'>".$d['nama']."</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-group">
+                        <label for="jenis_simpanan" class="text-dark font-weight-bold mb-2">Jenis Simpanan</label>
+                        <select name="jenis_simpanan" id="jenis_simpanan" class="form-control form-control-lg" required>
+                            <option value="Pokok">Simpanan Pokok</option>
+                            <option value="Wajib">Simpanan Wajib</option>
+                            <option value="Sukarela" selected>Simpanan Sukarela</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="form-group">
+                        <label for="jumlah" class="text-dark font-weight-bold mb-2">Jumlah Setoran (Rp)</label>
+                        <input type="number" name="jumlah" id="jumlah" class="form-control form-control-lg" placeholder="Contoh: 100000" min="1000" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="tanggal" class="text-dark font-weight-bold mb-2">Tanggal Transaksi</label>
+                <input type="date" name="tanggal" id="tanggal" class="form-control form-control-lg" value="<?php echo date('Y-m-d'); ?>" required>
+            </div>
+
+            <div class="form-actions d-flex gap-3 mt-4">
+                <button type="submit" name="submit" class="btn btn-success btn-lg px-5">Simpan Setoran</button>
+                <a href="data_simpanan.php" class="btn btn-outline-secondary btn-lg px-4">Batal</a>
+            </div>
+        </form>
     </div>
-
-    <form method="POST" action="proses_tambah_simpanan.php" class="card p-4 shadow-sm">
-        <div class="mb-3">
-            <label class="form-label fw-bold">Pilih Anggota:</label>
-            <select name="id_anggota" class="form-select" required>
-                <option value="">-- Pilih Anggota --</option>
-                <?php while($anggota = mysqli_fetch_assoc($query_anggota)) { ?>
-                    <option value="<?php echo $anggota['id_anggota']; ?>">
-                        <?php echo $anggota['nama']; ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label fw-bold">Jenis Simpanan:</label>
-            <select name="jenis_simpanan" class="form-select" required>
-                <option value="">-- Pilih Jenis --</option>
-                <option value="Pokok">Simpanan Pokok</option>
-                <option value="Wajib">Simpanan Wajib</option>
-                <option value="Sukarela">Simpanan Sukarela</option>
-            </select>
-        </div>
-
-        <div class="mb-4">
-            <label class="form-label fw-bold">Jumlah Setoran (Rp):</label>
-            <input type="number" name="jumlah" class="form-control" placeholder="Contoh: 50000" required>
-        </div>
-
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">Simpan Transaksi</button>
-            <a href="data_simpanan.php" class="btn btn-outline-secondary">Batal</a>
-        </div>
-    </form>
 </div>
 
 <?php include 'footer.php'; ?>

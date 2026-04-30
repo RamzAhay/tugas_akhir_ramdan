@@ -24,10 +24,13 @@ include 'header.php';
                 <select name="id_anggota" id="id_anggota" class="form-control form-control-lg" required>
                     <option value="">-- Silakan Pilih Anggota --</option>
                     <?php
-                    // Ambil data anggota yang aktif
-                    $q_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER BY nama ASC");
+                    /**
+                     * URUTAN: Berdasarkan id_anggota ASC
+                     * TAMPILAN: Hanya menampilkan nama (ID dalam kurung dihapus)
+                     */
+                    $q_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER BY id_anggota ASC");
                     while ($d = mysqli_fetch_assoc($q_anggota)) {
-                        echo "<option value='".$d['id_anggota']."'>".$d['nama']." (ID: ".$d['id_anggota'].")</option>";
+                        echo "<option value='".$d['id_anggota']."'>".$d['nama']."</option>";
                     }
                     ?>
                 </select>
@@ -46,6 +49,7 @@ include 'header.php';
                     <div class="form-group">
                         <label for="bunga" class="text-dark font-weight-bold mb-2">Bunga Pinjaman (%)</label>
                         <input type="number" name="bunga" id="bunga" class="form-control form-control-lg" placeholder="Contoh: 10" value="10" min="0" required>
+                        <small class="text-muted">Masukkan angka persen (contoh: 10 untuk 10%)</small>
                     </div>
                 </div>
             </div>

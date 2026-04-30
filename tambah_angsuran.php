@@ -85,12 +85,15 @@ $id_pinjaman_get = isset($_GET['id']) ? mysqli_real_escape_string($koneksi, $_GE
                         <select name="id_pinjaman" id="id_pinjaman" class="form-select input-clean" required onchange="updateDebtInfo()">
                             <option value="">-- Cari Nama Anggota --</option>
                             <?php
-                            // Query: Hanya anggota yang punya pinjaman berstatus 'Disetujui'
+                            /**
+                             * PERUBAHAN: Order by id_anggota ASC (melalui tabel p)
+                             * TAMPILAN: Hanya menampilkan nama
+                             */
                             $query = mysqli_query($koneksi, "SELECT p.*, a.nama 
                                                             FROM tb_pinjaman_ramdan p 
                                                             JOIN tb_anggota_ramdan a ON p.id_anggota = a.id_anggota 
                                                             WHERE p.status_pinjaman = 'Disetujui' 
-                                                            ORDER BY a.nama ASC");
+                                                            ORDER BY a.id_anggota ASC");
                             
                             while ($row = mysqli_fetch_assoc($query)) {
                                 $selected = ($id_pinjaman_get == $row['id_pinjaman']) ? 'selected' : '';
@@ -134,7 +137,7 @@ $id_pinjaman_get = isset($_GET['id']) ? mysqli_real_escape_string($koneksi, $_GE
                     <!-- Nominal Bayar (Tanpa RP, dengan Format Angka) -->
                     <div class="mb-4">
                         <label class="label-minimal d-block mb-2">Jumlah Pembayaran</label>
-                        <input type="text" id="jumlah_bayar_format" class="input-clean fw-bold" placeholder="Masukkan nominal" required oninput="handlePaymentInput(this)">
+                        <input type="text" id="jumlah_bayar_format" class="input-clean fw-bold" placeholder="Masukkan nominal (contoh: 500.000)" required oninput="handlePaymentInput(this)">
                         <!-- Input hidden untuk dikirim ke database (angka polos) -->
                         <input type="hidden" name="jumlah_bayar" id="jumlah_bayar">
                         
