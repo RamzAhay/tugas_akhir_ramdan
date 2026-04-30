@@ -8,7 +8,7 @@ include 'header.php';
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="mb-1">Data Pembayaran Angsuran</h2>
-            <p class="text-muted small mb-0">Kelola dan pantau pembayaran cicilan anggota yang disetujui.</p>
+            <p class="text-muted small mb-0">Halaman ini hanya menampilkan pinjaman aktif yang perlu dibayar.</p>
         </div>
         <?php if ($_SESSION['role'] != 'Anggota'): ?>
             <a href="tambah_angsuran.php" class="btn btn-primary shadow-sm">+ Input Pembayaran</a>
@@ -34,23 +34,23 @@ include 'header.php';
                         <?php
                         $no = 1;
                         
-                        /** * FIX BUG LOGIKA KEUANGAN: 
-                         * Jangan pernah tampilkan pinjaman yang berstatus 'Diajukan' atau 'Ditolak'
-                         * di halaman angsuran ini. Hanya tampilkan yang valid!
+                        /** * FILTER DIPERBARUI:
+                         * Menambahkan 'Lunas' ke dalam NOT IN agar data yang sudah selesai tidak muncul lagi.
+                         * Hanya menampilkan status 'Disetujui'.
                          */
                         $query = mysqli_query($koneksi, "SELECT p.*, a.nama 
                                                          FROM tb_pinjaman_ramdan p 
                                                          JOIN tb_anggota_ramdan a ON p.id_anggota = a.id_anggota 
-                                                         WHERE p.status_pinjaman NOT IN ('Diajukan', 'Ditolak')
+                                                         WHERE p.status_pinjaman NOT IN ('Diajukan', 'Ditolak', 'Lunas')
                                                          ORDER BY p.sisa_pinjaman DESC, p.id_pinjaman DESC");
                         
                         if (mysqli_num_rows($query) == 0) {
-                            echo "<tr><td colspan='7' class='text-center py-5 text-muted'>Belum ada data pinjaman yang disetujui untuk diangsur.</td></tr>";
+                            echo "<tr><td colspan='7' class='text-center py-5 text-muted'>Tidak ada pinjaman aktif yang perlu diangsur saat ini.</td></tr>";
                         }
 
                         while ($data = mysqli_fetch_assoc($query)) {
                             $status = $data['status_pinjaman'];
-                            $badge_class = ($status == 'Lunas') ? 'bg-success' : 'bg-primary';
+                            $badge_class = 'bg-primary'; // Karena hanya status 'Disetujui' yang muncul
                         ?>
                         <tr>
                             <td class="text-center text-muted"><?php echo $no++; ?></td>
@@ -63,7 +63,7 @@ include 'header.php';
                                 <div class="btn-group gap-1">
                                     <a href="riwayat_angsuran.php?id=<?php echo $data['id_pinjaman']; ?>" class="btn btn-info btn-sm text-white">Lihat Riwayat</a>
                                     
-                                    <?php if($status != 'Lunas' && $_SESSION['role'] != 'Anggota'): ?>
+                                    <?php if($_SESSION['role'] != 'Anggota'): ?>
                                         <a href="tambah_angsuran.php?id=<?php echo $data['id_pinjaman']; ?>" class="btn btn-success btn-sm">Bayar</a>
                                     <?php endif; ?>
                                 </div>

@@ -165,6 +165,13 @@ function isActive($page) {
                 <li class="nav-item">
                     <a class="nav-link <?php echo isActive('data_angsuran.php'); ?>" href="data_angsuran.php">Angsuran</a>
                 </li>
+
+                <!-- MENU MONITORING (HANYA UNTUK ADMIN) -->
+                <?php if($_SESSION['role'] == 'Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo isActive('monitoring_keuangan.php'); ?>" href="monitoring_keuangan.php">Monitoring</a>
+                </li>
+                <?php endif; ?>
             </ul>
             
             <div class="d-flex align-items-center">

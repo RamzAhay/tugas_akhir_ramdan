@@ -134,7 +134,7 @@ $id_pinjaman_get = isset($_GET['id']) ? mysqli_real_escape_string($koneksi, $_GE
                     <!-- Nominal Bayar (Tanpa RP, dengan Format Angka) -->
                     <div class="mb-4">
                         <label class="label-minimal d-block mb-2">Jumlah Pembayaran</label>
-                        <input type="text" id="jumlah_bayar_format" class="input-clean fw-bold" placeholder="Masukkan nominal (contoh: 500.000)" required oninput="handlePaymentInput(this)">
+                        <input type="text" id="jumlah_bayar_format" class="input-clean fw-bold" placeholder="Masukkan nominal" required oninput="handlePaymentInput(this)">
                         <!-- Input hidden untuk dikirim ke database (angka polos) -->
                         <input type="hidden" name="jumlah_bayar" id="jumlah_bayar">
                         
