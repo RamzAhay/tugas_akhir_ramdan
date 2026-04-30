@@ -3,143 +3,239 @@ include 'auth.php';
 include 'koneksi.php';
 include 'header.php';
 
-/**
- * FIX BUG KEAMANAN & LOGIKA:
- * 1. Jika yang login adalah 'Anggota', paksa filter hanya untuk dirinya sendiri.
- * 2. Admin & Petugas tetap bisa melihat semua data atau melakukan filter.
- */
-$role_user = $_SESSION['role'];
-$nama_user = $_SESSION['nama'];
+// Pastikan session ada, jika tidak set null untuk menghindari error undefined key
+$role_user = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+$id_user_logged = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null;
 
-// Asumsi: ID Anggota disimpan di session saat login (umumnya id_user atau id_anggota)
-// Jika role adalah Anggota, kita cari ID-nya di tabel anggota berdasarkan nama/id session
+// Logika Filter Anggota
 if ($role_user == 'Anggota') {
-    // Kita kunci filter hanya untuk anggota yang sedang login
-    // Pastikan session menyimpan id_anggota, jika tidak kita cari berdasarkan nama
-    $id_user_session = $_SESSION['id_user']; 
-    $q_cari_id = mysqli_query($koneksi, "SELECT id_anggota FROM tb_user_ramdan WHERE id_user = '$id_user_session'");
-    $d_user = mysqli_fetch_assoc($q_cari_id);
-    
-    // Jika user ini adalah anggota, kita ambil ID Anggotanya (jika ada relasi)
-    // Untuk mempermudah, kita asumsikan admin/petugas mengelola filter
-    $id_anggota_filter = isset($d_user['id_anggota']) ? $d_user['id_anggota'] : ''; 
+    // Jika Anggota, ambil ID Anggota-nya dari tabel user berdasarkan id_user di session
+    if ($id_user_logged) {
+        $q_user = mysqli_query($koneksi, "SELECT id_anggota FROM tb_user_ramdan WHERE id_user = '$id_user_logged'");
+        $d_user = mysqli_fetch_assoc($q_user);
+        $filter_anggota = isset($d_user['id_anggota']) ? $d_user['id_anggota'] : '';
+    } else {
+        $filter_anggota = '';
+    }
 } else {
-    // Admin & Petugas bebas menggunakan filter dari URL
-    $id_anggota_filter = isset($_GET['id_anggota']) ? mysqli_real_escape_string($koneksi, $_GET['id_anggota']) : '';
+    // Admin/Petugas mengambil dari GET id_anggota atau id (sebagai fallback dari URL ?id=1)
+    if (isset($_GET['id_anggota'])) {
+        $filter_anggota = mysqli_real_escape_string($koneksi, $_GET['id_anggota']);
+    } elseif (isset($_GET['id'])) {
+        $filter_anggota = mysqli_real_escape_string($koneksi, $_GET['id']);
+    } else {
+        $filter_anggota = '';
+    }
 }
+
+// Ambil Nama Anggota untuk ditampilkan di Header
+$nama_anggota_tampil = "";
+if (!empty($filter_anggota)) {
+    $q_m = mysqli_query($koneksi, "SELECT nama FROM tb_anggota_ramdan WHERE id_anggota = '$filter_anggota'");
+    $d_m = mysqli_fetch_assoc($q_m);
+    $nama_anggota_tampil = isset($d_m['nama']) ? $d_m['nama'] : "Tidak Ditemukan";
+}
+
+$filter_tgl_awal = isset($_GET['tgl_awal']) ? mysqli_real_escape_string($koneksi, $_GET['tgl_awal']) : '';
+$filter_tgl_akhir = isset($_GET['tgl_akhir']) ? mysqli_real_escape_string($koneksi, $_GET['tgl_akhir']) : '';
 ?>
+
+<style>
+    .f-section {
+        background: #f8fafc; 
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 18px; 
+        margin-bottom: 20px;
+    }
+    .f-container {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-end !important;
+    }
+    .f-group {
+        flex: 1;
+        min-width: 140px;
+        margin-bottom: 0 !important;
+    }
+    .f-label {
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        color: #475569 !important;
+        text-transform: uppercase;
+        margin-bottom: 4px !important;
+        display: block !important;
+    }
+    .f-control {
+        display: block !important;
+        width: 100% !important;
+        height: 34px !important; 
+        margin: 0 !important;    
+        padding: 4px 10px !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        font-size: 13px !important;
+        background-color: #ffffff !important;
+    }
+    .btn-f-cari, .btn-f-print {
+        height: 34px !important;
+        padding: 0 15px !important;
+        background: #334155 !important; 
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;
+    }
+    .btn-f-print:hover, .btn-f-cari:hover {
+        background: #1e293b !important;
+        color: white !important;
+    }
+    .btn-f-reset {
+        height: 34px !important;
+        width: 34px !important;
+        background: #ffffff !important;
+        color: #ef4444 !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+    .info-member-box {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #334155;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+</style>
 
 <div class="content">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-1">Log Transaksi Simpanan</h2>
-            <p class="text-muted small mb-0">Memantau riwayat setoran dan penarikan kas koperasi.</p>
+            <h4 class="fw-bold text-dark mb-0">Riwayat Mutasi Simpanan</h4>
+            <p class="text-muted small mb-0">Laporan transaksi simpanan dan penarikan anggota.</p>
         </div>
-        <!-- Tombol cetak menyesuaikan filter -->
-        <a href="cetak_simpanan.php<?php echo $id_anggota_filter ? '?id_anggota='.$id_anggota_filter : ''; ?>" class="btn btn-secondary shadow-sm" target="_blank">
-            <i class="bi bi-printer"></i> 🖨️ Cetak Laporan
-        </a>
+        <div class="d-flex gap-2">
+            <a href="data_simpanan.php" class="btn btn-outline-secondary btn-sm px-3">Kembali</a>
+        </div>
     </div>
 
-    <!-- FITUR FILTER: Hanya muncul untuk Admin & Petugas -->
-    <?php if ($role_user != 'Anggota'): ?>
-    <div class="card mb-4 shadow-sm border-0 bg-light">
-        <div class="card-body">
-            <form method="GET" action="riwayat_simpanan.php" class="row g-3 align-items-center">
-                <div class="col-auto">
-                    <label class="fw-bold text-dark">Pilih Anggota:</label>
-                </div>
-                <div class="col-auto">
-                    <select name="id_anggota" class="form-select" onchange="this.form.submit()">
-                        <option value="">-- Tampilkan Semua Transaksi --</option>
-                        <?php
-                        $q_anggota = mysqli_query($koneksi, "SELECT * FROM tb_anggota_ramdan ORDER BY nama ASC");
-                        while ($d = mysqli_fetch_assoc($q_anggota)) {
-                            $selected = ($d['id_anggota'] == $id_anggota_filter) ? 'selected' : '';
-                            echo "<option value='".$d['id_anggota']."' $selected>".$d['nama']."</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <?php if($id_anggota_filter): ?>
-                <div class="col-auto">
-                    <a href="riwayat_simpanan.php" class="btn btn-outline-danger btn-sm">Reset</a>
-                </div>
-                <?php endif; ?>
-            </form>
+    <!-- TAMPILAN INFORMASI ANGGOTA -->
+    <?php if (!empty($filter_anggota)): ?>
+    <div class="info-member-box shadow-sm">
+        <div class="row">
+            <div class="col-md-3">
+                <span class="text-muted small fw-bold">ID ANGGOTA</span>
+                <div class="fw-bold text-dark"><?php echo $filter_anggota; ?></div>
+            </div>
+            <div class="col-md-9">
+                <span class="text-muted small fw-bold">NAMA ANGGOTA</span>
+                <div class="fw-bold text-dark fs-5"><?php echo strtoupper($nama_anggota_tampil); ?></div>
+            </div>
         </div>
     </div>
     <?php endif; ?>
 
-    <!-- Tabel Data Riwayat -->
-    <div class="card shadow-sm mb-5 border-0">
+    <!-- FILTER SECTION -->
+    <div class="f-section shadow-sm">
+        <form method="GET" action="riwayat_simpanan.php">
+            <input type="hidden" name="id_anggota" value="<?php echo $filter_anggota; ?>">
+            
+            <div class="f-container">
+                <div class="f-group">
+                    <span class="f-label">Dari Tanggal</span>
+                    <input type="date" name="tgl_awal" class="f-control" value="<?php echo $filter_tgl_awal; ?>">
+                </div>
+
+                <div class="f-group">
+                    <span class="f-label">Sampai Tanggal</span>
+                    <input type="date" name="tgl_akhir" class="f-control" value="<?php echo $filter_tgl_akhir; ?>">
+                </div>
+
+                <div class="d-flex gap-1">
+                    <button type="submit" class="btn-f-cari">FILTER</button>
+                    
+                    <a href="cetak_simpanan.php?id_anggota=<?php echo $filter_anggota; ?>&tgl_awal=<?php echo $filter_tgl_awal; ?>&tgl_akhir=<?php echo $filter_tgl_akhir; ?>" 
+                       class="btn-f-print" target="_blank">
+                        <i class="bi bi-printer me-2"></i> CETAK
+                    </a>
+
+                    <?php if($filter_tgl_awal != ''): ?>
+                        <a href="riwayat_simpanan.php?id_anggota=<?php echo $filter_anggota; ?>" class="btn-f-reset" title="Reset Tanggal">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABEL DATA -->
+    <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-dark text-white">
+                    <thead class="bg-light text-dark">
                         <tr>
-                            <th width="5%" class="text-center py-3">No</th>
-                            <th class="py-3">Tanggal</th>
-                            <th class="py-3">Nama Anggota</th>
-                            <th class="py-3">Jenis Transaksi</th>
-                            <th class="text-end py-3 px-4">Nominal (Rp)</th>
+                            <th class="text-center py-3 small fw-bold" width="50">NO</th>
+                            <th class="py-3 small fw-bold">TANGGAL</th>
+                            <th class="py-3 small fw-bold">KETERANGAN</th>
+                            <th class="py-3 small fw-bold text-end px-4">JUMLAH (RP)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $no = 1;
-                        
-                        // Membangun Query SQL secara dinamis
-                        $sql = "SELECT s.*, a.nama 
-                                FROM tb_simpanan_ramdan s 
-                                JOIN tb_anggota_ramdan a ON s.id_anggota = a.id_anggota";
-                        
-                        if ($id_anggota_filter != '') {
-                            $sql .= " WHERE s.id_anggota = '$id_anggota_filter'";
-                        }
-                        
-                        $sql .= " ORDER BY s.id_simpanan DESC";
-                                      
-                        $query = mysqli_query($koneksi, $sql);
+                        if (!empty($filter_anggota)) {
+                            $no = 1;
+                            $sql = "SELECT * FROM tb_simpanan_ramdan WHERE id_anggota = '$filter_anggota'";
 
-                        if (!$query) {
-                            echo "<tr><td colspan='5' class='text-center text-danger py-4'>Terjadi kesalahan database: " . mysqli_error($koneksi) . "</td></tr>";
-                        } else if (mysqli_num_rows($query) == 0) {
-                            echo "<tr><td colspan='5' class='text-center text-muted py-5'>
-                                    <img src='https://cdn-icons-png.flaticon.com/512/7486/7486744.png' width='80' class='mb-3 opacity-25'><br>
-                                    Belum ada catatan transaksi untuk filter ini.
-                                  </td></tr>";
-                        } else {
+                            if ($filter_tgl_awal != '' && $filter_tgl_akhir != '') {
+                                $sql .= " AND tanggal BETWEEN '$filter_tgl_awal' AND '$filter_tgl_akhir'";
+                            }
+
+                            $sql .= " ORDER BY id_simpanan ASC";
+                            $query = mysqli_query($koneksi, $sql);
+
+                            if(mysqli_num_rows($query) == 0) {
+                                echo "<tr><td colspan='4' class='text-center py-5 text-muted'>Tidak ada data transaksi simpanan untuk periode ini.</td></tr>";
+                            }
+
                             while ($data = mysqli_fetch_assoc($query)) {
-                                $nominal = $data['jumlah'];
-                                
-                                if ($nominal > 0) {
-                                    $jenis = "Setoran (" . $data['jenis_simpanan'] . ")";
-                                    $warna = "text-success fw-bold";
-                                    $tanda = "+ ";
-                                } else {
-                                    $jenis = "Penarikan Tunai";
-                                    $warna = "text-danger fw-bold";
-                                    $tanda = "- ";
-                                    $nominal = abs($nominal);
-                                }
-                        ?>
-                        <tr>
-                            <td class="text-center text-muted"><?php echo $no++; ?></td>
-                            <td><?php echo date('d M Y', strtotime($data['tanggal'])); ?></td>
-                            <td class="fw-bold"><?php echo htmlspecialchars($data['nama']); ?></td>
-                            <td>
-                                <span class="badge <?php echo ($data['jumlah'] > 0) ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'; ?> px-3">
-                                    <?php echo $jenis; ?>
-                                </span>
-                            </td>
-                            <td class="text-end <?php echo $warna; ?> px-4">
-                                <?php echo $tanda . number_format($nominal, 0, ',', '.'); ?>
-                            </td>
-                        </tr>
-                        <?php 
+                                $is_setoran = ($data['jumlah'] > 0);
+                            ?>
+                            <tr>
+                                <td class="text-center text-muted small"><?php echo $no++; ?></td>
+                                <td><?php echo date('d/m/Y', strtotime($data['tanggal'])); ?></td>
+                                <td>
+                                    <?php if($is_setoran): ?>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                            Setoran: <?php echo $data['jenis_simpanan']; ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                            Penarikan Tunai
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-end px-4 fw-bold <?php echo $is_setoran ? 'text-success' : 'text-danger'; ?>">
+                                    <?php echo ($is_setoran ? '+' : '-') . ' ' . number_format(abs($data['jumlah']), 0, ',', '.'); ?>
+                                </td>
+                            </tr>
+                            <?php 
                             } 
-                        } 
+                        } else {
+                            echo "<tr><td colspan='4' class='text-center py-5 text-muted'>Silakan pilih anggota terlebih dahulu atau gunakan tautan 'Lihat Riwayat' dari menu Simpanan.</td></tr>";
+                        }
                         ?>
                     </tbody>
                 </table>
