@@ -89,8 +89,8 @@ if (mysqli_num_rows($query) > 0) {
         $pdf->Cell(10, 8, $no++, 1, 0, 'C');
         $pdf->Cell(65, 8, ' ' . strtoupper($row['nama']), 1, 0, 'L');
         $pdf->Cell(35, 8, date('d/m/Y', strtotime($row['tanggal_pinjaman'])), 1, 0, 'C');
-        $pdf->Cell(45, 8, 'Rp ' . number_format($row['jumlah_pinjaman'], 0, ',', '.'), 1, 0, 'R');
-        $pdf->Cell(45, 8, 'Rp ' . number_format($row['sisa_pinjaman'], 0, ',', '.'), 1, 0, 'R');
+        $pdf->Cell(45, 8, rupiah($row['jumlah_pinjaman']), 1, 0, 'R');
+        $pdf->Cell(45, 8, rupiah($row['sisa_pinjaman']), 1, 0, 'R');
         $pdf->Cell(35, 8, $row['lama_pinjaman'] . ' Bulan', 1, 0, 'C');
         $pdf->Cell(45, 8, $row['status_pinjaman'], 1, 1, 'C');
         
@@ -101,7 +101,7 @@ if (mysqli_num_rows($query) > 0) {
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->SetFillColor(241, 245, 249);
     $pdf->Cell(155, 10, 'TOTAL PIUTANG AKTIF (SALDO DI LUAR)', 1, 0, 'R', true);
-    $pdf->Cell(45, 10, 'Rp ' . number_format($total_piutang, 0, ',', '.'), 1, 0, 'R', true);
+    $pdf->Cell(45, 10, rupiah($total_piutang), 1, 0, 'R', true);
     $pdf->Cell(80, 10, '', 1, 1, 'C', true);
 } else {
     $pdf->Cell(280, 15, 'Tidak ada data pinjaman yang ditemukan.', 1, 1, 'C');

@@ -30,9 +30,9 @@ if (isset($_POST['id_pinjaman'])) {
 
     // 6. Format ke Rupiah dan kirim kembali sebagai JSON agar diterima oleh AJAX JavaScript kamu
     $response = array(
-        'total_pinjaman' => 'Rp ' . number_format($total_hutang, 0, ',', '.'),
-        'sudah_dibayar'  => 'Rp ' . number_format($sudah_dibayar, 0, ',', '.'),
-        'sisa_pinjaman'  => 'Rp ' . number_format($sisa_hutang, 0, ',', '.')
+        'total_pinjaman' => rupiah($total_hutang),
+        'sudah_dibayar'  => rupiah($sudah_dibayar),
+        'sisa_pinjaman'  => rupiah($sisa_hutang)
     );
 
     echo json_encode($response);

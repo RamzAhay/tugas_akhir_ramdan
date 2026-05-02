@@ -253,8 +253,8 @@ $filter_tgl_akhir = isset($_GET['tgl_akhir']) ? mysqli_real_escape_string($konek
                             <td class="text-center text-muted small"><?php echo $no++; ?></td>
                             <td class="fw-bold text-dark"><?php echo htmlspecialchars($data['nama']); ?></td>
                             <td class="text-center small"><?php echo date('d/m/Y', strtotime($data['tanggal_pinjaman'])); ?></td>
-                            <td class="small">Rp <?php echo number_format($data['jumlah_pinjaman'], 0, ',', '.'); ?></td>
-                            <td class="fw-bold text-dark">Rp <?php echo number_format($data['sisa_pinjaman'], 0, ',', '.'); ?></td>
+                            <td class="small"><?php echo rupiah($data['jumlah_pinjaman']); ?></td>
+                            <td class="fw-bold text-dark"><?php echo rupiah($data['sisa_pinjaman']); ?></td>
                             <td class="text-center">
                                 <span class="badge-status <?php echo $badge_class; ?>">
                                     <?php echo $status; ?>

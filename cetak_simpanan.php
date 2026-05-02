@@ -109,7 +109,7 @@ if (mysqli_num_rows($query) > 0) {
         
         // Kolom Debit (Penarikan)
         if (!$is_setoran) {
-            $pdf->Cell(45, 8, 'Rp ' . number_format(abs($row['jumlah']), 0, ',', '.'), 1, 0, 'R');
+            $pdf->Cell(45, 8, rupiah(abs($row['jumlah'])), 1, 0, 'R');
             $total_debit += abs($row['jumlah']);
         } else {
             $pdf->Cell(45, 8, '-', 1, 0, 'C');
@@ -117,7 +117,7 @@ if (mysqli_num_rows($query) > 0) {
         
         // Kolom Kredit (Setoran)
         if ($is_setoran) {
-            $pdf->Cell(50, 8, 'Rp ' . number_format($row['jumlah'], 0, ',', '.'), 1, 1, 'R');
+            $pdf->Cell(50, 8, rupiah($row['jumlah']), 1, 1, 'R');
             $total_kredit += $row['jumlah'];
         } else {
             $pdf->Cell(50, 8, '-', 1, 1, 'C');
@@ -128,12 +128,12 @@ if (mysqli_num_rows($query) > 0) {
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->SetFillColor(245, 245, 245);
     $pdf->Cell(95, 10, 'TOTAL PER PERIODE', 1, 0, 'C', true); // Perataan diubah ke Center ('C')
-    $pdf->Cell(45, 10, 'Rp ' . number_format($total_debit, 0, ',', '.'), 1, 0, 'R', true);
-    $pdf->Cell(50, 10, 'Rp ' . number_format($total_kredit, 0, ',', '.'), 1, 1, 'R', true);
+    $pdf->Cell(45, 10, rupiah($total_debit), 1, 0, 'R', true);
+    $pdf->Cell(50, 10, rupiah($total_kredit), 1, 1, 'R', true);
     
     $pdf->SetFillColor(230, 242, 255);
     $pdf->Cell(95, 10, 'SALDO BERSIH', 1, 0, 'C', true); // Perataan diubah ke Center ('C')
-    $pdf->Cell(95, 10, 'Rp ' . number_format($total_kredit - $total_debit, 0, ',', '.'), 1, 1, 'R', true);
+    $pdf->Cell(95, 10, rupiah($total_kredit - $total_debit), 1, 1, 'R', true);
 
 } else {
     $pdf->Cell(190, 15, 'Tidak ada riwayat transaksi pada filter ini.', 1, 1, 'C');

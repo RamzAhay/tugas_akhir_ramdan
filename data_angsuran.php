@@ -56,8 +56,8 @@ include 'header.php';
                             <td class="text-center text-muted"><?php echo $no++; ?></td>
                             <td class="fw-bold"><?php echo htmlspecialchars($data['nama']); ?></td>
                             <td><?php echo date('d M Y', strtotime($data['tanggal_pinjaman'])); ?></td>
-                            <td>Rp <?php echo number_format($data['total_pinjaman'], 0, ',', '.'); ?></td>
-                            <td class="fw-bold text-danger">Rp <?php echo number_format($data['sisa_pinjaman'], 0, ',', '.'); ?></td>
+                            <td><?php echo rupiah($data['total_pinjaman']); ?></td>
+                            <td class="fw-bold text-danger"><?php echo rupiah($data['sisa_pinjaman']); ?></td>
                             <td><span class="badge <?php echo $badge_class; ?>"><?php echo $status; ?></span></td>
                             <td class="text-center">
                                 <div class="btn-group gap-1">

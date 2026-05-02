@@ -2,6 +2,18 @@
 include 'auth.php';
 include 'koneksi.php';
 
+// Include SweetAlert2 library
+echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+
+// =========================================================================
+// WADAH HTML UNTUK SWEETALERT (Agar layar tidak blank saat alert muncul)
+// =========================================================================
+echo "<!DOCTYPE html><html><head>";
+echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+echo "<style>body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }</style>";
+echo "</head><body>";
+
 if (isset($_POST['submit'])) {
     // Menangkap data dari form di Canvas
     $id_pinjaman = mysqli_real_escape_string($koneksi, $_POST['id_pinjaman']);
@@ -13,7 +25,16 @@ if (isset($_POST['submit'])) {
     $data_pinjaman = mysqli_fetch_assoc($query_cek);
     
     if (!$data_pinjaman) {
-        echo "<script>alert('Data pinjaman tidak ditemukan!'); window.location='data_angsuran.php';</script>";
+        echo "<script>
+            Swal.fire({
+                title: 'Gagal!',
+                text: 'Data pinjaman tidak ditemukan!',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location='data_angsuran.php';
+            });
+        </script>";
         exit();
     }
 
@@ -24,7 +45,16 @@ if (isset($_POST['submit'])) {
 
     // Validasi keamanan: Sisa tidak boleh minus
     if ($sisa_baru < 0) {
-        echo "<script>alert('Gagal! Jumlah bayar melebihi sisa hutang.'); window.history.back();</script>";
+        echo "<script>
+            Swal.fire({
+                title: 'Gagal!',
+                text: 'Gagal! Jumlah bayar melebihi sisa hutang.',
+                icon: 'error',
+                confirmButtonText: 'Kembali'
+            }).then(() => {
+                window.history.back();
+            });
+        </script>";
         exit();
     }
 
@@ -48,7 +78,17 @@ if (isset($_POST['submit'])) {
         $query_upd = mysqli_query($koneksi, $sql_upd);
 
         if ($query_upd) {
-            echo "<script>alert('Pembayaran Berhasil! Sisa pinjaman diperbarui.'); window.location='data_angsuran.php';</script>";
+            echo "<script>
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Pembayaran Berhasil! Sisa pinjaman diperbarui.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location='data_angsuran.php';
+                });
+            </script>";
         } else {
             echo "Gagal Update Sisa Pinjaman: " . mysqli_error($koneksi);
         }
@@ -60,4 +100,6 @@ if (isset($_POST['submit'])) {
     header("Location: tambah_angsuran.php");
     exit();
 }
+
+echo "</body></html>";
 ?>

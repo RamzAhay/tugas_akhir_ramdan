@@ -43,8 +43,8 @@ $angsuran_ke = $d_hitung['ke'];
 $no_struk  = "STR-" . $data['id_angsuran'];
 $tgl_bayar = date('d/m/Y H:i', strtotime($data['tanggal_bayar']));
 $nama      = strtoupper($data['nama']);
-$nominal   = "Rp " . number_format($data['jumlah_bayar'], 0, ',', '.');
-$sisa      = "Rp " . number_format($data['sisa_pinjaman'], 0, ',', '.');
+$nominal   = rupiah($data['jumlah_bayar']);
+$sisa      = rupiah($data['sisa_pinjaman']);
 $petugas   = strtoupper($_SESSION['nama']);
 
 /**

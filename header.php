@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Fungsi sederhana untuk mengecek apakah halaman sedang aktif
+// Fungsi mengecek halaman aktif
 function isActive($page) {
     $current_page = basename($_SERVER['PHP_SELF']);
     return ($current_page == $page) ? 'active' : '';
@@ -14,7 +14,7 @@ function isActive($page) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSP RAMDAN - Dashboard</title>
+    <title>KSP RAMDAN - Sistem Informasi Koperasi</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -22,188 +22,112 @@ function isActive($page) {
     <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <style>
-        /* ============================================================
-           FIX NAVIGASI RAMDAN - VERSI TERAKHIR (ANTI-GAGAL)
-           ============================================================ */
-        
-        /* 1. Paksa agar elemen dropdown tidak terpotong oleh overflow */
-        .navbar, .navbar-collapse, .container-fluid, .nav-item {
-            overflow: visible !important; 
-        }
+    <!-- CSS MASTER BARU KITA (Yang 100% aman) -->
+    <link rel="stylesheet" href="style.css">
 
-        .navbar {
-            z-index: 9999 !important;
-            position: sticky !important;
-            top: 0;
-            background-color: #212529 !important;
-        }
+    <!-- SweetAlert2 Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+    // UX: Masking Rupiah
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-        /* 2. Styling Dropdown Custom */
-        .rdn-dropdown {
-            position: relative;
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
         }
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp ' + rupiah : '');
+    }
 
-        .rdn-toggle {
-            cursor: pointer !important;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            user-select: none;
+    // UX: Button Loading
+    function setBtnLoading(btnId, text = "Sedang Memproses...") {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${text}`;
+            btn.closest('form').submit();
         }
-
-        /* Panah kecil */
-        .rdn-toggle::after {
-            content: "";
-            border-top: 5px solid rgba(255,255,255,0.6);
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            display: inline-block;
-            margin-left: 5px;
-        }
-
-        /* Menu yang melayang */
-        .rdn-menu {
-            display: none; 
-            position: absolute;
-            top: 100%;
-            left: 0;
-            min-width: 220px;
-            background: #ffffff !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important;
-            border-radius: 12px;
-            padding: 10px 0;
-            margin-top: 8px;
-            list-style: none;
-            z-index: 100000 !important;
-            border: 1px solid #ddd;
-        }
-
-        /* Munculkan menu */
-        .rdn-menu.aktif {
-            display: block !important;
-        }
-
-        /* Link dalam menu */
-        .rdn-item {
-            display: block;
-            padding: 12px 20px;
-            color: #333 !important;
-            text-decoration: none !important;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-        }
-
-        .rdn-item:hover {
-            background-color: #f0f7ff;
-            color: #0d6efd !important;
-            padding-left: 25px;
-        }
-
-        .rdn-divider {
-            height: 1px;
-            background-color: #eee;
-            margin: 8px 0;
-        }
-
-        /* Style untuk Menu Aktif */
-        .nav-link.active {
-            color: #0d6efd !important;
-            font-weight: 600;
-        }
-    </style>
+    }
+    </script>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark shadow">
+<!-- Navbar Utama -->
+<nav class="navbar navbar-expand-lg sticky-top">
     <div class="container-fluid px-4">
-        <a class="navbar-brand fw-bold" href="dashboard_admin.php">KSP <span class="text-primary">RAMDAN</span></a>
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center text-white" href="dashboard_admin.php">
+            <i class="bi bi-piggy-bank-fill me-2 text-primary fs-3"></i>
+            <span>KSP RAMDAN</span>
+        </a>
         
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navUtama">
+        <!-- Toggle Mobile -->
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
-        <div class="collapse navbar-collapse" id="navUtama">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 align-items-lg-center">
+                
                 <li class="nav-item">
-                    <a class="nav-link <?php echo isActive('dashboard_admin.php'); echo isActive('dashboard_petugas.php'); ?>" href="<?php echo ($_SESSION['role'] == 'Admin') ? 'dashboard_admin.php' : 'dashboard_petugas.php'; ?>">Dashboard</a>
+                    <a class="nav-link <?php echo isActive('dashboard_admin.php'); ?>" href="dashboard_admin.php">Dashboard</a>
                 </li>
                 
-                <?php if($_SESSION['role'] != 'Anggota'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo isActive('data_anggota.php'); ?>" href="data_anggota.php">Anggota</a>
                 </li>
-                <?php endif; ?>
 
-                <!-- DROPDOWN PINJAMAN -->
-                <li class="nav-item rdn-dropdown">
-                    <a class="nav-link rdn-toggle <?php echo isActive('data_pinjaman.php'); echo isActive('riwayat_pinjaman.php'); ?>" id="btnPinjaman">Pinjaman</a>
-                    <ul class="rdn-menu" id="menuPinjaman">
-                        <li><a class="rdn-item" href="data_pinjaman.php">Pinjaman Aktif</a></li>
-                        <li><a class="rdn-item" href="riwayat_pinjaman.php">Riwayat Pinjaman</a></li>
-                        <li class="rdn-divider"></li>
-                        <li><a class="rdn-item fw-bold text-primary" href="tambah_pinjaman.php">+ Input Pinjaman</a></li>
-                    </ul>
-                </li>
-
-                <!-- DROPDOWN SIMPANAN -->
-                <li class="nav-item rdn-dropdown">
-                    <a class="nav-link rdn-toggle <?php echo isActive('data_simpanan.php'); echo isActive('riwayat_simpanan.php'); ?>" id="btnSimpanan">Simpanan</a>
-                    <ul class="rdn-menu" id="menuSimpanan">
-                        <li><a class="rdn-item" href="data_simpanan.php">Data Saldo</a></li>
-                        <li><a class="rdn-item" href="riwayat_simpanan.php">Log Transaksi</a></li>
-                        <li class="rdn-divider"></li>
-                        <li><a class="rdn-item fw-bold text-success" href="tambah_simpanan.php">+ Setor Tunai</a></li>
-                        <li><a class="rdn-item fw-bold text-danger" href="tarik_simpanan.php">− Tarik Tunai</a></li>
-                    </ul>
-                </li>
-
+                <!-- MENU ANGSURAN -->
                 <li class="nav-item">
                     <a class="nav-link <?php echo isActive('data_angsuran.php'); ?>" href="data_angsuran.php">Angsuran</a>
                 </li>
+
+                <!-- DROPDOWN NATIVE BOOTSTRAP: SIMPANAN -->
+                <li class="nav-item dropdown ms-lg-1">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Simpanan
+                    </a>
+                    <ul class="dropdown-menu shadow-sm border-0">
+                        <li><a class="dropdown-item" href="data_simpanan.php"><i class="bi bi-wallet2 me-2 text-muted"></i> Rekap Saldo</a></li>
+                        <li><a class="dropdown-item" href="riwayat_simpanan.php"><i class="bi bi-clock-history me-2 text-muted"></i> Log Transaksi</a></li>
+                    </ul>
+                </li>
+
+                <!-- DROPDOWN NATIVE BOOTSTRAP: PINJAMAN -->
+                <li class="nav-item dropdown ms-lg-1">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Pinjaman
+                    </a>
+                    <ul class="dropdown-menu shadow-sm border-0">
+                        <li><a class="dropdown-item" href="data_pinjaman.php"><i class="bi bi-cash-stack me-2 text-muted"></i> Pinjaman Aktif</a></li>
+                        <li><a class="dropdown-item" href="riwayat_pinjaman.php"><i class="bi bi-check-circle me-2 text-muted"></i> Riwayat Selesai</a></li>
+                    </ul>
+                </li>
             </ul>
             
-            <div class="d-flex align-items-center">
+            <!-- Profil User -->
+            <div class="d-flex align-items-center mt-3 mt-lg-0 pb-3 pb-lg-0">
                 <div class="text-white me-3 d-none d-lg-block text-end">
-                    <small class="opacity-75">Halo,</small><br>
-                    <strong><?php echo $_SESSION['nama']; ?></strong>
+                    <small class="opacity-75 d-block" style="font-size: 10px; margin-bottom: -3px;">PENGGUNA</small>
+                    <strong style="font-size: 14px;"><?php echo $_SESSION['nama']; ?></strong>
                 </div>
-                <a href="logout.php" class="btn btn-danger btn-sm px-4 rounded-pill">Logout</a>
+                <a href="logout.php" class="btn btn-danger btn-sm px-4 rounded-pill fw-bold shadow-sm">Logout</a>
             </div>
         </div>
     </div>
 </nav>
 
-<!-- SCRIPT KLIK MANUAL (PALING STABIL) -->
-<script>
-document.addEventListener('click', function(e) {
-    const btnPinjaman = document.getElementById('btnPinjaman');
-    const menuPinjaman = document.getElementById('menuPinjaman');
-    const btnSimpanan = document.getElementById('btnSimpanan');
-    const menuSimpanan = document.getElementById('menuSimpanan');
-
-    // Klik Pinjaman
-    if (e.target.closest('#btnPinjaman')) {
-        menuPinjaman.classList.toggle('aktif');
-        menuSimpanan.classList.remove('aktif');
-        e.stopPropagation();
-    } 
-    // Klik Simpanan
-    else if (e.target.closest('#btnSimpanan')) {
-        menuSimpanan.classList.toggle('aktif');
-        menuPinjaman.classList.remove('aktif');
-        e.stopPropagation();
-    } 
-    // Klik di mana saja untuk menutup
-    else {
-        if(menuPinjaman) menuPinjaman.classList.remove('aktif');
-        if(menuSimpanan) menuSimpanan.classList.remove('aktif');
-    }
-});
-</script>
-
-<div class="container-fluid mt-4">
+<!-- 
+    PENTING: Bootstrap Bundle JS ditaruh di sini (sebelum body ditutup) 
+    agar HTML selesai diproses dulu sebelum JS dropdown dijalankan.
+-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

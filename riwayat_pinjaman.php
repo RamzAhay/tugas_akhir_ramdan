@@ -242,8 +242,8 @@ $params_cetak = http_build_query([
                             <td class="fw-bold"><?php echo htmlspecialchars($data['nama']); ?></td>
                             <td class="text-center small"><?php echo date('d/m/Y', strtotime($data['tanggal_pinjaman'])); ?></td>
                             <td class="text-center small fw-bold text-success"><?php echo $tgl_lunas_tampil; ?></td>
-                            <td>Rp <?php echo number_format($data['jumlah_pinjaman'], 0, ',', '.'); ?></td>
-                            <td class="fw-bold">Rp <?php echo number_format($data['total_pinjaman'], 0, ',', '.'); ?></td>
+                            <td><?php echo rupiah($data['jumlah_pinjaman']); ?></td>
+                            <td class="fw-bold"><?php echo rupiah($data['total_pinjaman']); ?></td>
                             <td class="text-center">
                                 <span class="badge <?php echo $badge; ?> rounded-pill px-3"><?php echo $status; ?></span>
                             </td>

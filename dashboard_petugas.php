@@ -92,7 +92,7 @@ $jml_anggota = $d_anggota['jml'];
                     <i class="bi bi-box-arrow-in-down"></i>
                 </div>
                 <div class="stat-label">Setoran Hari Ini</div>
-                <div class="stat-value">Rp <?php echo number_format($setoran_hari_ini, 0, ',', '.'); ?></div>
+                <div class="stat-value"><?php echo rupiah($setoran_hari_ini); ?></div>
                 <div class="small text-muted">Total uang masuk</div>
             </div>
         </div>
@@ -102,7 +102,7 @@ $jml_anggota = $d_anggota['jml'];
                     <i class="bi bi-box-arrow-up"></i>
                 </div>
                 <div class="stat-label">Penarikan Hari Ini</div>
-                <div class="stat-value">Rp <?php echo number_format($tarikan_hari_ini, 0, ',', '.'); ?></div>
+                <div class="stat-value"><?php echo rupiah($tarikan_hari_ini); ?></div>
                 <div class="small text-muted">Total uang keluar</div>
             </div>
         </div>
@@ -191,7 +191,7 @@ $jml_anggota = $d_anggota['jml'];
                                     </span>
                                 </td>
                                 <td class="text-end pe-4 fw-bold <?php echo $is_plus ? 'text-success' : 'text-danger'; ?>">
-                                    Rp <?php echo number_format(abs($r['jumlah']), 0, ',', '.'); ?>
+                                    <?php echo rupiah(abs($r['jumlah'])); ?>
                                 </td>
                             </tr>
                             <?php } ?>

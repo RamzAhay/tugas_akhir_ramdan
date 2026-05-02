@@ -69,4 +69,13 @@ include 'header.php';
     </div>
 </div>
 
+<script>
+    // FUNGSI MASKING: Format Ribuan (Titik)
+    function formatInput(input, hiddenId) {
+        let rawValue = input.value.replace(/\D/g, "");
+        document.getElementById(hiddenId).value = rawValue;
+        input.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+</script>
+
 <?php include 'footer.php'; ?>

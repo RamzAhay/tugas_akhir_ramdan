@@ -108,11 +108,11 @@ $role_user = $_SESSION['role'];
                             <td class="text-center text-muted small"><?php echo $no++; ?></td>
                             <td class="text-center small text-muted"><?php echo $data['id_anggota']; ?></td>
                             <td class="fw-bold text-dark text-uppercase"><?php echo htmlspecialchars($data['nama']); ?></td>
-                            <td class="text-center">Rp <?php echo number_format($data['total_pokok'], 0, ',', '.'); ?></td>
-                            <td class="text-center">Rp <?php echo number_format($data['total_wajib'], 0, ',', '.'); ?></td>
-                            <td class="text-center">Rp <?php echo number_format($data['total_sukarela'], 0, ',', '.'); ?></td>
+                            <td class="text-center"><?php echo rupiah($data['total_pokok']); ?></td>
+                            <td class="text-center"><?php echo rupiah($data['total_wajib']); ?></td>
+                            <td class="text-center"><?php echo rupiah($data['total_sukarela']); ?></td>
                             <td class="text-end fw-bold text-total">
-                                Rp <?php echo number_format($data['total_semua'], 0, ',', '.'); ?>
+                                <?php echo rupiah($data['total_semua']); ?>
                             </td>
                             <td class="text-center small text-muted italic"><?php echo $tgl_update; ?></td>
                             

@@ -84,4 +84,16 @@ include 'header.php';
     </div>
 </div>
 
+<script>
+    // FUNGSI MASKING: Format Ribuan (Titik)
+    function formatInput(input, hiddenId) {
+        // Ambil angka murninya saja
+        let rawValue = input.value.replace(/\D/g, "");
+        // Masukkan angka murni ke input hidden untuk dikirim ke PHP
+        document.getElementById(hiddenId).value = rawValue;
+        // Tampilkan format titik di layar
+        input.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+</script>
+
 <?php include 'footer.php'; ?>

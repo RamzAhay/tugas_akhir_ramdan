@@ -105,8 +105,8 @@ if (mysqli_num_rows($query) > 0) {
         $tgl_lunas = ($row['status_pinjaman'] == 'Lunas' && $row['tanggal_lunas']) ? date('d/m/Y', strtotime($row['tanggal_lunas'])) : '-';
         $pdf->Cell(30, 8, $tgl_lunas, 1, 0, 'C');
         
-        $pdf->Cell(40, 8, 'Rp ' . number_format($row['jumlah_pinjaman'], 0, ',', '.'), 1, 0, 'R');
-        $pdf->Cell(40, 8, 'Rp ' . number_format($row['total_pinjaman'], 0, ',', '.'), 1, 0, 'R');
+        $pdf->Cell(40, 8, rupiah($row['jumlah_pinjaman']), 1, 0, 'R');
+        $pdf->Cell(40, 8, rupiah($row['total_pinjaman']), 1, 0, 'R');
         $pdf->Cell(35, 8, $row['lama_pinjaman'] . ' Bulan', 1, 0, 'C');
         
         if($row['status_pinjaman'] == 'Ditolak') $pdf->SetTextColor(200, 0, 0);

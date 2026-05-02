@@ -93,7 +93,7 @@ $rasio = ($total_simpanan > 0) ? ($uang_diluar / $total_simpanan) * 100 : 0;
                     </div>
                     <div class="card-label">Total Simpanan</div>
                 </div>
-                <div class="card-value">Rp <?php echo number_format($total_simpanan, 0, ',', '.'); ?></div>
+                <div class="card-value"><?php echo rupiah($total_simpanan); ?></div>
                 <div class="text-muted small mt-2">Saldo kas tersedia di sistem</div>
             </a>
         </div>
@@ -107,7 +107,7 @@ $rasio = ($total_simpanan > 0) ? ($uang_diluar / $total_simpanan) * 100 : 0;
                     </div>
                     <div class="card-label">Uang di Luar</div>
                 </div>
-                <div class="card-value">Rp <?php echo number_format($uang_diluar, 0, ',', '.'); ?></div>
+                <div class="card-value"><?php echo rupiah($uang_diluar); ?></div>
                 <div class="text-muted small mt-2">Klik untuk melacak pinjaman aktif <i class="bi bi-arrow-right-short"></i></div>
             </a>
         </div>
@@ -140,13 +140,13 @@ $rasio = ($total_simpanan > 0) ? ($uang_diluar / $total_simpanan) * 100 : 0;
                             <tr>
                                 <td class="ps-4 py-3 text-muted">Dana Mengendap (Cash on Hand)</td>
                                 <td class="text-end pe-4 fw-bold" style="color: #198754;">
-                                    Rp <?php echo number_format($dana_mengendap, 0, ',', '.'); ?>
+                                    <?php echo rupiah($dana_mengendap); ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="ps-4 py-3 text-muted">Total Pinjaman Berhasil (Lunas)</td>
                                 <td class="text-end pe-4 fw-bold">
-                                    Rp <?php echo number_format($total_lunas, 0, ',', '.'); ?>
+                                    <?php echo rupiah($total_lunas); ?>
                                 </td>
                             </tr>
                             <tr>

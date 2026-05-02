@@ -13,7 +13,16 @@ $query = mysqli_query($koneksi, "SELECT p.*, a.nama FROM tb_pinjaman_ramdan p JO
 $data = mysqli_fetch_assoc($query);
 
 if(!$data) {
-    echo "<script>alert('Data tidak ditemukan atau pinjaman sudah diproses!'); window.location='data_pinjaman.php';</script>";
+    echo "<script>
+        Swal.fire({
+            title: 'Data Tidak Ditemukan!',
+            text: 'Data tidak ditemukan atau pinjaman sudah diproses!',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            window.location='data_pinjaman.php';
+        });
+    </script>";
     exit();
 }
 
