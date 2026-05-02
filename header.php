@@ -25,7 +25,7 @@ function isActive($page) {
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <!-- CSS MASTER BARU KITA (Yang 100% aman) -->
+    <!-- CSS MASTER -->
     <link rel="stylesheet" href="style.css">
 
     <!-- SweetAlert2 Library -->

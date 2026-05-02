@@ -1,159 +1,1369 @@
 /* ==========================================================================
-   KSP RAMDAN - MASTER STYLESHEET (CLEAN & MODERN)
-   Didesain khusus untuk bersahabat dengan Bootstrap 5.3
+   KSP RAMDAN — MASTER STYLESHEET v2.0
+   Refined Corporate · Bootstrap 5.3 Compatible
    ========================================================================== */
 
-/* --- 1. VARIABEL TEMA (Ubah warna utama di sini) --- */
+/* --- 1. GOOGLE FONTS IMPORT --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* --- 2. CSS CUSTOM PROPERTIES --- */
 :root {
-    --ksp-primary: #0d6efd;      /* Biru Utama */
-    --ksp-primary-hover: #0b5ed7;
-    --ksp-dark: #1e293b;         /* Slate Dark (Lebih elegan dari hitam) */
-    --ksp-bg: #f8fafc;           /* Background aplikasi (Abu-abu sangat muda) */
-    --ksp-text: #334155;
-    --ksp-border: #e2e8f0;
+    /* Core Brand */
+    --ksp-primary:        #0d6efd;
+    --ksp-primary-hover:  #0859d6;
+    --ksp-primary-soft:   rgba(13, 110, 253, 0.08);
+    --ksp-primary-glow:   0 0 0 4px rgba(13, 110, 253, 0.14);
+
+    /* Neutrals */
+    --ksp-dark:           #1e293b;
+    --ksp-dark-2:         #334155;
+    --ksp-text:           #374151;
+    --ksp-muted:          #6b7280;
+    --ksp-border:         #e5e7eb;
+    --ksp-border-soft:    #f0f2f5;
+
+    /* Surfaces */
+    --ksp-bg:             #f4f7fb;
+    --ksp-surface:        #ffffff;
+    --ksp-surface-2:      #f8fafc;
+    --ksp-glass:          rgba(255, 255, 255, 0.85);
+
+    /* Semantic */
+    --ksp-success:        #16a34a;
+    --ksp-success-soft:   rgba(22, 163, 74, 0.1);
+    --ksp-warning:        #d97706;
+    --ksp-warning-soft:   rgba(217, 119, 6, 0.1);
+    --ksp-danger:         #dc2626;
+    --ksp-danger-soft:    rgba(220, 38, 38, 0.1);
+    --ksp-info:           #0891b2;
+    --ksp-info-soft:      rgba(8, 145, 178, 0.1);
+
+    /* Shadows */
+    --shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    --shadow-lg:    0 10px 30px rgba(0, 0, 0, 0.1),  0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-glow:  0 0 24px rgba(13, 110, 253, 0.18);
+
+    /* Shape */
+    --radius-sm:    6px;
+    --radius-md:    10px;
+    --radius-lg:    16px;
+    --radius-xl:    20px;
+    --radius-pill:  999px;
+
+    /* Motion */
+    --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in:    cubic-bezier(0.55, 0, 1, 0.45);
+    --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+    --duration:   0.28s;
 }
 
-/* --- 2. BASE & TYPOGRAPHY --- */
+
+/* ==========================================================================
+   3. BASE RESET & GLOBAL
+   ========================================================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Plus Jakarta Sans', sans-serif;
     background-color: var(--ksp-bg);
     color: var(--ksp-text);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-.content {
-    padding: 30px 15px;
-    min-height: 80vh;
+/* Soft scrollbar */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: var(--radius-pill);
 }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* --- 3. KUSTOMISASI NAVBAR BOOTSTRAP --- */
-.navbar {
-    background-color: var(--ksp-dark) !important;
-    padding: 15px 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.navbar-brand {
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.nav-link {
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8) !important;
-    padding: 8px 16px !important;
-    border-radius: 8px;
-    transition: all 0.2s ease-in-out;
-    margin: 0 4px;
-}
-
-.nav-link:hover {
-    color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.nav-link.active {
-    color: #ffffff !important;
-    background-color: var(--ksp-primary);
-}
-
-/* --- 4. DROPDOWN BOOTSTRAP (Lebih Halus & Modern) --- */
-.dropdown-menu {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin-top: 10px !important;
-    animation: fadeInDropdown 0.3s ease;
-}
-
-.dropdown-item {
-    border-radius: 8px;
-    padding: 10px 15px;
-    font-weight: 500;
-    color: var(--ksp-text);
-    transition: all 0.2s;
-}
-
-.dropdown-item:hover, .dropdown-item:focus {
-    background-color: var(--ksp-bg);
+/* Selection */
+::selection {
+    background: var(--ksp-primary-soft);
     color: var(--ksp-primary);
 }
 
-@keyframes fadeInDropdown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+
+/* ==========================================================================
+   4. LAYOUT & CONTENT WRAPPER
+   ========================================================================== */
+
+.content {
+    padding: 28px 24px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 72px);
+    animation: contentFadeIn 0.4s var(--ease-out) both;
 }
 
-/* --- 5. CARDS (Kotak Konten) --- */
+@keyframes contentFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ==========================================================================
+   5. NAVBAR — OVERRIDES (Bootstrap-safe: only scoping to .navbar context)
+   ========================================================================== */
+
+.navbar {
+    background: linear-gradient(135deg, var(--ksp-dark) 0%, #243347 100%) !important;
+    padding: 0;
+    height: 64px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18), 0 1px 0 rgba(255,255,255,0.04) inset;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    backdrop-filter: blur(12px);
+}
+
+.navbar .container-fluid {
+    height: 64px;
+}
+
+.navbar-brand {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #ffffff !important;
+    letter-spacing: 0.3px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.navbar-brand i {
+    font-size: 1.4rem;
+    color: var(--ksp-primary) !important;
+    filter: drop-shadow(0 0 8px rgba(13, 110, 253, 0.5));
+}
+
+/* Nav Links */
+.navbar .nav-link {
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    padding: 6px 14px !important;
+    border-radius: var(--radius-md) !important;
+    transition: color var(--duration) ease, background var(--duration) ease !important;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.navbar .nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+}
+
+.navbar .nav-link.active {
+    color: #ffffff !important;
+    background: var(--ksp-primary) !important;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.35);
+}
+
+/* Dropdown Toggle indicator */
+.navbar .nav-link.dropdown-toggle::after {
+    opacity: 0.6;
+    transition: transform var(--duration) ease;
+}
+
+.navbar .nav-link.dropdown-toggle.show::after {
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+/* Dropdown Menu — scoped to navbar */
+.navbar .dropdown-menu {
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-lg);
+    padding: 8px;
+    min-width: 200px;
+    margin-top: 8px !important;
+    animation: dropFade 0.2s var(--ease-out) both;
+}
+
+@keyframes dropFade {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+.navbar .dropdown-item {
+    border-radius: var(--radius-md);
+    padding: 9px 14px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ksp-text);
+    transition: background var(--duration) ease, color var(--duration) ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+    background: var(--ksp-primary-soft);
+    color: var(--ksp-primary);
+}
+
+.navbar .dropdown-item i {
+    font-size: 0.95rem;
+    opacity: 0.65;
+    width: 16px;
+    text-align: center;
+}
+
+/* Mobile toggler */
+.navbar-toggler {
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 5px 9px;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255%2c255%2c255%2c0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+
+/* ==========================================================================
+   6. CARDS
+   ========================================================================== */
+
 .card {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s, box-shadow 0.2s;
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--duration) var(--ease-out),
+                box-shadow var(--duration) var(--ease-out),
+                border-color var(--duration) ease;
+    overflow: hidden;
 }
 
-/* --- 6. TABLES (Tabel Data) --- */
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    background: var(--ksp-surface) !important;
+    border-bottom: 1px solid var(--ksp-border-soft) !important;
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ksp-dark);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-footer {
+    background: var(--ksp-surface-2) !important;
+    border-top: 1px solid var(--ksp-border-soft) !important;
+    padding: 12px 20px;
+}
+
+/* Clickable cards */
+a.card, a.dash-card {
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+a.card:hover, a.dash-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--ksp-primary) !important;
+}
+
+
+/* ==========================================================================
+   7. DASHBOARD — STAT CARDS & WELCOME BANNER
+   ========================================================================== */
+
+/* Welcome / Hero Banner */
+.ksp-welcome-banner {
+    background: linear-gradient(135deg, var(--ksp-dark) 0%, #1a3a5c 60%, #0d2d4d 100%);
+    border-radius: var(--radius-xl);
+    padding: 28px 32px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-lg);
+}
+
+.ksp-welcome-banner::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(13,110,253,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.ksp-welcome-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.ksp-welcome-banner h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+    position: relative;
+}
+
+.ksp-welcome-banner p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.85rem;
+    margin: 0;
+    position: relative;
+}
+
+/* Financial Summary / Stat Cards */
+.stat-card {
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+    height: 100%;
+    transition: all var(--duration) var(--ease-out);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--ksp-border);
+    transition: background var(--duration) ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-card:hover::after { background: var(--ksp-primary); }
+.stat-card.green:hover::after  { background: var(--ksp-success); }
+.stat-card.orange:hover::after { background: var(--ksp-warning); }
+.stat-card.red:hover::after    { background: var(--ksp-danger); }
+
+.stat-card .stat-icon {
+    width: 46px; height: 46px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 14px;
+}
+
+.stat-card .stat-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ksp-muted);
+    margin-bottom: 6px;
+}
+
+.stat-card .stat-value {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--ksp-dark);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.stat-card .stat-sub {
+    font-size: 0.74rem;
+    color: var(--ksp-muted);
+}
+
+/* Dash Cards (Admin overview) */
+.dash-card {
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 22px 24px;
+    height: 100%;
+    display: block;
+    text-decoration: none !important;
+    transition: all var(--duration) var(--ease-out);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.dash-card .card-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ksp-muted);
+}
+
+.dash-card .card-value {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--ksp-dark);
+    margin-top: 6px;
+    line-height: 1.2;
+}
+
+.dash-card .icon-box {
+    width: 44px; height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+.accent-blue  { background: rgba(13,110,253,0.10);  color: var(--ksp-primary); }
+.accent-green { background: rgba(22,163,74,0.10);   color: var(--ksp-success); }
+.accent-dark  { background: rgba(30,41,59,0.08);    color: var(--ksp-dark); }
+.accent-orange{ background: rgba(217,119,6,0.10);   color: var(--ksp-warning); }
+
+
+/* ==========================================================================
+   8. TABLES
+   ========================================================================== */
+
+.table-responsive {
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    overflow: hidden;
+}
+
 .table {
     margin-bottom: 0;
+    font-size: 0.84rem;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.table th {
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #64748b;
-    border-bottom: 2px solid var(--ksp-border);
-    padding: 15px;
-}
-
-.table td {
-    padding: 15px;
-    vertical-align: middle;
-    border-bottom: 1px solid var(--ksp-border);
-}
-
-/* Warna Header Tabel Kustom */
-.table-ksp-head {
-    background-color: var(--ksp-primary) !important;
-    color: white !important;
-}
-
+/* Head */
+.table thead th,
 .table-ksp-head th {
-    color: white !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    padding: 14px 16px !important;
+    border-bottom: none !important;
+    white-space: nowrap;
+}
+
+/* Default light head */
+.table thead.bg-light th {
+    background: #f8fafc !important;
+    color: #64748b !important;
+    border-bottom: 1px solid var(--ksp-border) !important;
+}
+
+/* Custom dark/blue head — background MUST be on th cells directly,
+   because Bootstrap 5 sets background-color on th and overrides thead */
+.table-ksp-head,
+.table > thead.table-ksp-head {
+    background: var(--ksp-primary) !important;
+}
+
+.table-ksp-head th,
+.table > thead.table-ksp-head th,
+.table-ksp-head th * {
+    background: var(--ksp-primary) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Dark/Slate variant */
+.table-dark-head thead th,
+.table > thead.table-dark-head th {
+    background: var(--ksp-dark) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Cells */
+.table td {
+    padding: 13px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--ksp-border-soft);
+    color: var(--ksp-text);
+    transition: background var(--duration) ease;
+}
+
+/* Row hover */
+.table-hover tbody tr {
+    transition: background var(--duration) ease;
+}
+
+.table-hover tbody tr:hover td {
+    background: rgba(13, 110, 253, 0.035) !important;
+}
+
+/* Last row no border */
+.table tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* --- 7. FORM UX (Interaksi Input) --- */
-.form-control, .form-select {
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 10px 15px;
-    font-size: 0.95rem;
-    transition: all 0.2s;
+/* Sticky header */
+.table-sticky thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--ksp-surface);
 }
 
-.form-control:focus, .form-select:focus {
-    border-color: var(--ksp-primary);
-    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+
+/* ==========================================================================
+   9. STATUS BADGES
+   ========================================================================== */
+
+.badge, [class*="badge-status"] {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* --- 8. BUTTONS --- */
+/* Status-specific */
+.badge-status { border-radius: var(--radius-pill); font-weight: 700; }
+
+.badge-status.badge-lunas,
+.status-lunas {
+    background: var(--ksp-success-soft);
+    color: var(--ksp-success);
+    border: 1px solid rgba(22,163,74,0.2);
+}
+
+.badge-status.badge-diajukan,
+.status-diajukan,
+.badge-pending {
+    background: var(--ksp-warning-soft);
+    color: var(--ksp-warning);
+    border: 1px solid rgba(217,119,6,0.2);
+}
+
+.badge-status.badge-disetujui,
+.status-disetujui,
+.badge-active {
+    background: rgba(99,102,241,0.10);
+    color: #4f46e5;
+    border: 1px solid rgba(99,102,241,0.2);
+}
+
+.badge-status.badge-ditolak,
+.status-ditolak {
+    background: var(--ksp-danger-soft);
+    color: var(--ksp-danger);
+    border: 1px solid rgba(220,38,38,0.2);
+}
+
+/* Bootstrap badge overrides */
+.bg-success  { background: var(--ksp-success) !important; }
+.bg-warning  { background: var(--ksp-warning) !important; }
+.bg-danger   { background: var(--ksp-danger)  !important; }
+.bg-primary  { background: var(--ksp-primary) !important; }
+.bg-info     { background: var(--ksp-info)    !important; }
+
+
+/* ==========================================================================
+   10. BUTTONS
+   ========================================================================== */
+
 .btn {
-    font-weight: 500;
-    border-radius: 8px;
-    padding: 8px 20px;
-    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 0.84rem;
+    border-radius: var(--radius-md) !important;
+    padding: 9px 20px;
+    transition: all var(--duration) var(--ease-out) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
 }
 
+.btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.2s ease;
+    border-radius: inherit;
+}
+
+.btn:hover::after { background: rgba(255,255,255,0.08); }
+.btn:active::after { background: rgba(0,0,0,0.06); }
+
+/* Primary */
 .btn-primary {
-    background-color: var(--ksp-primary);
-    border: none;
+    background: var(--ksp-primary) !important;
+    border-color: var(--ksp-primary) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(13,110,253,0.25);
+}
+.btn-primary:hover {
+    background: var(--ksp-primary-hover) !important;
+    border-color: var(--ksp-primary-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(13,110,253,0.35) !important;
 }
 
-.btn-primary:hover {
-    background-color: var(--ksp-primary-hover);
+/* Success */
+.btn-success {
+    background: var(--ksp-success) !important;
+    border-color: var(--ksp-success) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(22,163,74,0.2);
+}
+.btn-success:hover {
+    background: #15803d !important;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+    box-shadow: 0 4px 14px rgba(22,163,74,0.3) !important;
+}
+
+/* Danger */
+.btn-danger {
+    background: var(--ksp-danger) !important;
+    border-color: var(--ksp-danger) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(220,38,38,0.2);
+}
+.btn-danger:hover {
+    background: #b91c1c !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(220,38,38,0.3) !important;
+}
+
+/* Warning */
+.btn-warning {
+    background: var(--ksp-warning) !important;
+    border-color: var(--ksp-warning) !important;
+    color: #fff !important;
+}
+.btn-warning:hover {
+    background: #b45309 !important;
+    transform: translateY(-1px);
+}
+
+/* Dark */
+.btn-dark {
+    background: var(--ksp-dark) !important;
+    border-color: var(--ksp-dark) !important;
+    color: #fff !important;
+}
+.btn-dark:hover {
+    background: #0f172a !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Outline variants */
+.btn-outline-secondary {
+    border-color: var(--ksp-border) !important;
+    color: var(--ksp-muted) !important;
+    background: transparent !important;
+}
+.btn-outline-secondary:hover {
+    background: var(--ksp-surface-2) !important;
+    color: var(--ksp-dark) !important;
+    border-color: #9ca3af !important;
+}
+
+/* Small buttons */
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 0.78rem;
+}
+
+/* KSP custom outline mini button */
+.btn-ksp-outline {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border: 1px solid var(--ksp-dark);
+    color: var(--ksp-dark);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--duration) var(--ease-out);
+    white-space: nowrap;
+    background: transparent;
+}
+
+.btn-ksp-outline:hover {
+    background: var(--ksp-dark);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* KSP solid action button */
+.btn-ksp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: var(--ksp-dark);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-md);
+    text-decoration: none !important;
+    transition: all var(--duration) var(--ease-out);
+    cursor: pointer;
+    letter-spacing: 0.3px;
+}
+
+.btn-ksp:hover {
+    background: #0f172a;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Reset icon button */
+.btn-f-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    width: 38px;
+    background: var(--ksp-surface);
+    color: var(--ksp-danger);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--duration) ease;
+}
+
+.btn-f-reset:hover {
+    background: var(--ksp-danger-soft);
+    border-color: rgba(220,38,38,0.3);
+    color: var(--ksp-danger);
+    transform: rotate(-20deg);
+}
+
+
+/* ==========================================================================
+   11. FORMS & INPUTS
+   ========================================================================== */
+
+.form-label, label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ksp-dark);
+    margin-bottom: 7px;
+}
+
+.form-control,
+.form-select,
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 0.88rem !important;
+    color: var(--ksp-text) !important;
+    background-color: var(--ksp-surface) !important;
+    border: 1.5px solid var(--ksp-border) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 10px 14px !important;
+    transition: border-color var(--duration) ease, box-shadow var(--duration) ease !important;
+    height: auto !important;
+    width: 100%;
+}
+
+.form-control:focus,
+.form-select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--ksp-primary) !important;
+    box-shadow: var(--ksp-primary-glow) !important;
+    outline: none !important;
+    background-color: var(--ksp-surface) !important;
+}
+
+.form-control::placeholder { color: #9ca3af; font-size: 0.85rem; }
+
+/* Input group */
+.input-group > .form-control {
+    border-right: none !important;
+}
+.input-group-text {
+    background: var(--ksp-surface-2);
+    border: 1.5px solid var(--ksp-border);
+    border-left: none;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    color: var(--ksp-muted);
+}
+
+/* Filter section */
+.filter-section, .f-section {
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-lg);
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow-xs);
+}
+
+.f-label, .filter-label {
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ksp-muted) !important;
+    margin-bottom: 7px;
+    display: block;
+}
+
+.f-input-small, .f-control {
+    height: 38px !important;
+    font-size: 0.82rem !important;
+    border: 1.5px solid var(--ksp-border) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 5px 12px !important;
+    background: var(--ksp-surface) !important;
+    color: var(--ksp-text) !important;
+    width: 100% !important;
+    transition: border-color var(--duration) ease !important;
+}
+
+.f-input-small:focus, .f-control:focus {
+    border-color: var(--ksp-primary) !important;
+    box-shadow: var(--ksp-primary-glow) !important;
+}
+
+
+/* ==========================================================================
+   12. QUICK LINKS (Petugas Dashboard)
+   ========================================================================== */
+
+.quick-link {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--ksp-surface-2);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-md);
+    text-decoration: none !important;
+    color: var(--ksp-dark);
+    font-size: 0.84rem;
+    font-weight: 600;
+    transition: all var(--duration) var(--ease-out);
+    gap: 12px;
+}
+
+.quick-link i {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    transition: transform var(--duration) var(--ease-out);
+}
+
+.quick-link:hover {
+    background: var(--ksp-dark);
+    color: #ffffff !important;
+    border-color: var(--ksp-dark);
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+}
+
+.quick-link:hover i { transform: scale(1.1); }
+
+
+/* ==========================================================================
+   13. RIWAYAT / DETAIL ANGSURAN — SUMMARY CARDS
+   ========================================================================== */
+
+.summary-card {
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    height: 100%;
+    box-shadow: var(--shadow-xs);
+    transition: box-shadow var(--duration) ease;
+}
+
+.summary-card:hover { box-shadow: var(--shadow-sm); }
+.summary-label { font-size: 0.68rem; font-weight: 700; color: var(--ksp-muted); text-transform: uppercase; letter-spacing: 0.6px; }
+.summary-value { font-size: 1.25rem; font-weight: 800; color: var(--ksp-dark); margin-top: 6px; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+/* Progress Bar */
+.progress {
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--ksp-border-soft);
+    overflow: hidden;
+}
+
+.progress-bar {
+    border-radius: var(--radius-pill);
+    transition: width 0.8s var(--ease-out);
+}
+
+
+/* ==========================================================================
+   14. LIKUIDITAS / STATUS PANELS
+   ========================================================================== */
+
+.panel-waspada {
+    background: rgba(220,38,38,0.05);
+    border: 1px solid rgba(220,38,38,0.2);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+}
+
+.panel-sehat {
+    background: rgba(22,163,74,0.05);
+    border: 1px solid rgba(22,163,74,0.2);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+}
+
+
+/* ==========================================================================
+   15. STRUK / RECEIPT STYLING
+   ========================================================================== */
+
+.struk-container {
+    background: var(--ksp-surface);
+    border: 2px dashed var(--ksp-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 420px;
+    margin: 0 auto;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.struk-divider {
+    border: none;
+    border-top: 2px dashed var(--ksp-border);
+    margin: 12px 0;
+}
+
+
+/* ==========================================================================
+   16. LOADING & SKELETON
+   ========================================================================== */
+
+.skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+}
+
+/* Spinner */
+.spinner-ksp {
+    width: 36px; height: 36px;
+    border: 3px solid var(--ksp-border);
+    border-top-color: var(--ksp-primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+
+/* ==========================================================================
+   17. TYPOGRAPHY UTILITIES
+   ========================================================================== */
+
+.text-brand { color: var(--ksp-primary) !important; }
+.text-muted  { color: var(--ksp-muted) !important; }
+.text-dark   { color: var(--ksp-dark) !important; }
+.text-total  { color: var(--ksp-success); font-weight: 800; }
+
+.font-display {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+}
+
+.small-caps {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-weight: 700;
+    color: var(--ksp-muted);
+}
+
+.page-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--ksp-dark);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.page-subtitle {
+    font-size: 0.82rem;
+    color: var(--ksp-muted);
+    margin: 4px 0 0;
+}
+
+
+/* ==========================================================================
+   18. ALERTS & SWEETALERT OVERRIDES
+   ========================================================================== */
+
+.alert {
+    border-radius: var(--radius-md) !important;
+    border-width: 1px !important;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 12px 16px;
+}
+
+/* Sweetalert2 custom */
+.swal2-popup {
+    border-radius: var(--radius-xl) !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 0.9rem !important;
+    box-shadow: var(--shadow-lg) !important;
+    padding: 28px !important;
+}
+
+.swal2-title {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 1.2rem !important;
+    font-weight: 800 !important;
+    color: var(--ksp-dark) !important;
+}
+
+.swal2-confirm {
+    border-radius: var(--radius-md) !important;
+    font-weight: 600 !important;
+    padding: 10px 28px !important;
+}
+
+.swal2-cancel {
+    border-radius: var(--radius-md) !important;
+    font-weight: 600 !important;
+}
+
+
+/* ==========================================================================
+   19. PAGE-SPECIFIC: LOGIN
+   ========================================================================== */
+
+.login-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #0d6efd 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(13,110,253,0.25) 0%, transparent 65%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.login-card {
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius-xl);
+    padding: 42px 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.25);
+    animation: loginSlide 0.5s var(--ease-out) both;
+}
+
+@keyframes loginSlide {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.login-card h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--ksp-dark);
+    margin-bottom: 4px;
+}
+
+.login-card p {
+    color: var(--ksp-muted);
+    font-size: 0.85rem;
+    margin-bottom: 28px;
+}
+
+
+/* ==========================================================================
+   20. PAGE-SPECIFIC: FORM CONTAINERS
+   ========================================================================== */
+
+.form-container {
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-xl);
+    padding: 32px 36px;
+    box-shadow: var(--shadow-md);
+    max-width: 840px;
+    margin: 0 auto;
+}
+
+.form-container h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--ksp-dark);
+    margin-bottom: 6px;
+}
+
+
+/* ==========================================================================
+   21. ANGSURAN FORM CARD
+   ========================================================================== */
+
+.form-angsuran-card {
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.info-panel {
+    background: var(--ksp-primary-soft);
+    border-left: 4px solid var(--ksp-primary);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+}
+
+.input-clean {
+    border: 1.5px solid var(--ksp-border);
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    height: 48px;
+    width: 100%;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color var(--duration) ease, box-shadow var(--duration) ease;
+    background: var(--ksp-surface);
+    color: var(--ksp-text);
+}
+
+.input-clean:focus {
+    border-color: var(--ksp-primary);
+    box-shadow: var(--ksp-primary-glow);
+}
+
+.label-minimal {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ksp-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+
+/* ==========================================================================
+   22. FOOTER
+   ========================================================================== */
+
+.site-footer {
+    background: var(--ksp-dark);
+    color: rgba(255,255,255,0.55);
+    font-size: 0.78rem;
+    text-align: center;
+    padding: 16px 24px;
+    margin-top: auto;
+}
+
+/* Inline footer override */
+.mt-5.text-center.text-muted {
+    font-size: 0.78rem;
+    color: #94a3b8 !important;
+    padding-bottom: 12px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--ksp-border);
+    opacity: 1;
+}
+
+
+/* ==========================================================================
+   23. MISCELLANEOUS UTILITIES
+   ========================================================================== */
+
+/* Rounded overflow container */
+.rounded-overflow {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+/* Divider with text */
+.divider-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ksp-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.divider-text::before, .divider-text::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ksp-border);
+}
+
+/* Number rupiah */
+.rp-value {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+/* Op card on petugas dashboard */
+.op-card {
+    background: var(--ksp-surface);
+    border: 1px solid var(--ksp-border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    height: 100%;
+    transition: all var(--duration) var(--ease-out);
+}
+.op-card:hover {
+    border-color: var(--ksp-dark);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Stats in petugas dashboard */
+.stat-label { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-value { font-size: 1.3rem; font-weight: 800; color: #1e293b; margin: 6px 0 2px; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+/* Icon circle */
+.icon-circle {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+
+/* ==========================================================================
+   24. RESPONSIVE ADJUSTMENTS
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+    .content { padding: 20px 16px 48px; }
+    .form-container { padding: 24px 20px; }
+
+    .navbar .collapse.navbar-collapse {
+        background: #141f2e;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        padding: 12px 16px 18px;
+        margin-top: 4px;
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+    }
+
+    .navbar .nav-link { margin: 3px 0; }
+
+    .filter-section, .f-section { padding: 14px 16px; }
+
+    .stat-card .stat-value { font-size: 1.2rem; }
+    .dash-card .card-value  { font-size: 1.3rem; }
+}
+
+@media (max-width: 575.98px) {
+    .content { padding: 16px 12px 40px; }
+
+    .ksp-welcome-banner { padding: 20px; }
+    .ksp-welcome-banner h4 { font-size: 1.1rem; }
+
+    .form-container { padding: 20px 16px; border-radius: var(--radius-lg); }
+    .form-angsuran-card { padding: 20px !important; }
+
+    .table th, .table td { padding: 10px 12px; }
+
+    .btn { padding: 8px 16px; font-size: 0.8rem; }
+}
+
+@media (min-width: 1200px) {
+    .content { padding: 32px 32px 80px; }
+}
+
+
+/* ==========================================================================
+   25. PRINT STYLES
+   ========================================================================== */
+
+@media print {
+    .navbar, .btn, .filter-section, .f-section, footer { display: none !important; }
+    .content { padding: 0; }
+    .card { box-shadow: none !important; border: 1px solid #dee2e6 !important; }
+    body { background: white; }
 }
