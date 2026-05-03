@@ -85,11 +85,13 @@ $pdf->Ln(5);
 $pdf->SetFillColor(51, 65, 85); // Slate Dark
 $pdf->SetTextColor(255, 255, 255);
 $pdf->SetFont('Arial', 'B', 10);
+// Penyesuaian lebar kolom agar pas 190mm
 $pdf->Cell(10, 10, 'No', 1, 0, 'C', true);
-$pdf->Cell(30, 10, 'Tanggal', 1, 0, 'C', true);
-$pdf->Cell(55, 10, 'Keterangan Transaksi', 1, 0, 'C', true);
-$pdf->Cell(45, 10, 'Debit (Keluar)', 1, 0, 'C', true);
-$pdf->Cell(50, 10, 'Kredit (Masuk)', 1, 1, 'C', true);
+$pdf->Cell(25, 10, 'Tanggal', 1, 0, 'C', true);
+$pdf->Cell(45, 10, 'Keterangan', 1, 0, 'C', true);
+$pdf->Cell(30, 10, 'Metode', 1, 0, 'C', true); // Kolom Metode Baru
+$pdf->Cell(40, 10, 'Debit (Keluar)', 1, 0, 'C', true);
+$pdf->Cell(40, 10, 'Kredit (Masuk)', 1, 1, 'C', true);
 
 // --- ISI TABEL ---
 $pdf->SetTextColor(0, 0, 0);
@@ -100,40 +102,45 @@ $total_debit = 0;
 
 if (mysqli_num_rows($query) > 0) {
     while ($row = mysqli_fetch_assoc($query)) {
+        // Ambil data metode, default Tunai jika kosong
+        $metode = (isset($row['metode_pembayaran']) && $row['metode_pembayaran'] != '') ? $row['metode_pembayaran'] : 'Tunai';
+
         $pdf->Cell(10, 8, $no++, 1, 0, 'C');
-        $pdf->Cell(30, 8, date('d-m-Y', strtotime($row['tanggal'])), 1, 0, 'C');
+        $pdf->Cell(25, 8, date('d-m-Y', strtotime($row['tanggal'])), 1, 0, 'C');
         
         $is_setoran = ($row['jumlah'] > 0);
-        $ket = $is_setoran ? 'Setoran: '.$row['jenis_simpanan'] : 'Penarikan Tunai';
-        $pdf->Cell(55, 8, ' ' . $ket, 1, 0, 'L');
+        $ket = $is_setoran ? 'Setor: '.$row['jenis_simpanan'] : 'Penarikan';
+        $pdf->Cell(45, 8, ' ' . $ket, 1, 0, 'L');
+        
+        $pdf->Cell(30, 8, $metode, 1, 0, 'C'); // Tampilkan Metode
         
         // Kolom Debit (Penarikan)
         if (!$is_setoran) {
-            $pdf->Cell(45, 8, rupiah(abs($row['jumlah'])), 1, 0, 'R');
+            $pdf->Cell(40, 8, 'Rp ' . number_format(abs($row['jumlah']), 0, ',', '.'), 1, 0, 'R');
             $total_debit += abs($row['jumlah']);
         } else {
-            $pdf->Cell(45, 8, '-', 1, 0, 'C');
+            $pdf->Cell(40, 8, '-', 1, 0, 'C');
         }
         
         // Kolom Kredit (Setoran)
         if ($is_setoran) {
-            $pdf->Cell(50, 8, rupiah($row['jumlah']), 1, 1, 'R');
+            $pdf->Cell(40, 8, 'Rp ' . number_format($row['jumlah'], 0, ',', '.'), 1, 1, 'R');
             $total_kredit += $row['jumlah'];
         } else {
-            $pdf->Cell(50, 8, '-', 1, 1, 'C');
+            $pdf->Cell(40, 8, '-', 1, 1, 'C');
         }
     }
     
     // --- FOOTER TABEL ---
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->SetFillColor(245, 245, 245);
-    $pdf->Cell(95, 10, 'TOTAL PER PERIODE', 1, 0, 'C', true); // Perataan diubah ke Center ('C')
-    $pdf->Cell(45, 10, rupiah($total_debit), 1, 0, 'R', true);
-    $pdf->Cell(50, 10, rupiah($total_kredit), 1, 1, 'R', true);
+    $pdf->Cell(110, 10, 'TOTAL PER PERIODE', 1, 0, 'C', true); // Lebar digabung (10+25+45+30)
+    $pdf->Cell(40, 10, 'Rp ' . number_format($total_debit, 0, ',', '.'), 1, 0, 'R', true);
+    $pdf->Cell(40, 10, 'Rp ' . number_format($total_kredit, 0, ',', '.'), 1, 1, 'R', true);
     
     $pdf->SetFillColor(230, 242, 255);
-    $pdf->Cell(95, 10, 'SALDO BERSIH', 1, 0, 'C', true); // Perataan diubah ke Center ('C')
-    $pdf->Cell(95, 10, rupiah($total_kredit - $total_debit), 1, 1, 'R', true);
+    $pdf->Cell(110, 10, 'SALDO BERSIH (NET CHANGE)', 1, 0, 'C', true);
+    $pdf->Cell(80, 10, 'Rp ' . number_format($total_kredit - $total_debit, 0, ',', '.'), 1, 1, 'R', true);
 
 } else {
     $pdf->Cell(190, 15, 'Tidak ada riwayat transaksi pada filter ini.', 1, 1, 'C');
@@ -155,3 +162,4 @@ $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(60, 5, 'NIP. ...........................', 'T', 1, 'C');
 
 $pdf->Output('I', 'Laporan_Mutasi_' . ($id_a ?: 'Semua') . '.pdf');
+?>

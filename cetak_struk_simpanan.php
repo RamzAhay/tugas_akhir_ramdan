@@ -37,12 +37,13 @@ $jenis     = $data['jenis_simpanan'];
 $nominal   = abs($data['jumlah']); // Menggunakan abs() agar nilai negatif pada penarikan tampil positif di struk
 $is_tarik  = ($data['jumlah'] < 0);
 $petugas   = strtoupper($_SESSION['nama']);
+$metode    = (isset($data['metode_pembayaran']) && $data['metode_pembayaran'] != '') ? strtoupper($data['metode_pembayaran']) : 'TUNAI';
 
 /**
  * PROSES GENERATE PDF
- * Ukuran: 80mm (lebar thermal) x 100mm (tinggi)
+ * Ukuran: 80mm (lebar thermal) x 110mm (tinggi) - Sedikit dipanjangkan
  */
-$pdf = new FPDF('P', 'mm', array(80, 100));
+$pdf = new FPDF('P', 'mm', array(80, 110));
 $pdf->SetMargins(5, 5, 5);
 $pdf->SetAutoPageBreak(false);
 $pdf->AddPage();
@@ -73,6 +74,10 @@ $pdf->Cell(45, 5, ': ' . $nama, 0, 1);
 $pdf->Cell(25, 5, 'Tipe', 0, 0);
 $pdf->Cell(45, 5, ': ' . ($is_tarik ? 'PENARIKAN' : 'SETORAN ' . strtoupper($jenis)), 0, 1);
 
+// BARIS BARU: Menampilkan Metode Pembayaran
+$pdf->Cell(25, 5, 'Metode', 0, 0);
+$pdf->Cell(45, 5, ': ' . $metode, 0, 1);
+
 $pdf->Ln(2);
 $pdf->Cell(70, 0, '', 'T', 1); // Garis horizontal
 $pdf->Ln(3);
@@ -80,7 +85,7 @@ $pdf->Ln(3);
 // --- NOMINAL ---
 $pdf->SetFont('Courier', 'B', 12);
 $pdf->Cell(30, 8, 'TOTAL', 0, 0);
-$pdf->Cell(40, 8, rupiah($nominal), 0, 1, 'R');
+$pdf->Cell(40, 8, 'Rp ' . number_format($nominal, 0, ',', '.'), 0, 1, 'R');
 
 $pdf->Ln(3);
 $pdf->Cell(70, 0, '', 'T', 1);
@@ -95,3 +100,4 @@ $pdf->Cell(70, 4, 'Kasir: ' . $petugas, 0, 1, 'C');
 
 // Output
 $pdf->Output('I', 'Struk_' . $no_reff . '.pdf');
+?>

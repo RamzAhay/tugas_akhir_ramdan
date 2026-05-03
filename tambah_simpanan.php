@@ -51,9 +51,21 @@ include 'header.php';
                 <div class="col-md-6 mb-4">
                     <div class="form-group">
                         <label for="jumlah" class="text-dark font-weight-bold mb-2">Jumlah Setoran (Rp)</label>
-                        <input type="number" name="jumlah" id="jumlah" class="form-control form-control-lg" placeholder="Contoh: 100000" min="1000" required>
+                        <!-- PERUBAHAN: Input text visual & input hidden -->
+                        <input type="text" id="jumlah_format" class="form-control form-control-lg" placeholder="Contoh: 100.000" required oninput="formatInput(this, 'jumlah')">
+                        <input type="hidden" name="jumlah" id="jumlah">
                     </div>
                 </div>
+            </div>
+
+            <!-- Metode Setoran -->
+            <div class="form-group mb-4">
+                <label for="metode_pembayaran" class="text-dark font-weight-bold mb-2">Metode Setoran</label>
+                <select name="metode_pembayaran" id="metode_pembayaran" class="form-control form-control-lg" required>
+                    <option value="Tunai">Tunai / Cash</option>
+                    <option value="Transfer">Transfer Bank</option>
+                </select>
+                <small class="text-muted">Pilih bagaimana anggota menyetorkan uangnya.</small>
             </div>
 
             <div class="form-group mb-4">

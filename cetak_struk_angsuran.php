@@ -2,8 +2,7 @@
 include 'auth.php';
 include 'koneksi.php';
 
-/** * Menggunakan folder 'FPDF' sesuai struktur folder kamu.
- */
+// Menggunakan folder 'FPDF' sesuai struktur folder kamu.
 require('FPDF/fpdf.php'); 
 
 // Menangkap ID Angsuran dari URL
@@ -43,9 +42,10 @@ $angsuran_ke = $d_hitung['ke'];
 $no_struk  = "STR-" . $data['id_angsuran'];
 $tgl_bayar = date('d/m/Y H:i', strtotime($data['tanggal_bayar']));
 $nama      = strtoupper($data['nama']);
-$nominal   = rupiah($data['jumlah_bayar']);
-$sisa      = rupiah($data['sisa_pinjaman']);
+$nominal   = "Rp " . number_format($data['jumlah_bayar'], 0, ',', '.');
+$sisa      = "Rp " . number_format($data['sisa_pinjaman'], 0, ',', '.');
 $petugas   = strtoupper($_SESSION['nama']);
+$metode    = (isset($data['metode_pembayaran']) && $data['metode_pembayaran'] != '') ? strtoupper($data['metode_pembayaran']) : 'TUNAI';
 
 /**
  * PROSES GENERATE PDF
@@ -83,6 +83,10 @@ $pdf->Cell(45, 5, ': ' . $tgl_bayar, 0, 1);
 
 $pdf->Cell(25, 5, 'Anggota', 0, 0);
 $pdf->Cell(45, 5, ': ' . $nama, 0, 1);
+
+// BARIS BARU: Menampilkan Metode Pembayaran
+$pdf->Cell(25, 5, 'Metode', 0, 0);
+$pdf->Cell(45, 5, ': ' . $metode, 0, 1);
 
 // Menambahkan keterangan angsuran ke-berapa
 $pdf->SetFont('Courier', 'B', 9);

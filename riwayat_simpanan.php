@@ -103,7 +103,7 @@ $params_cetak = http_build_query([
         display: flex; align-items: center; justify-content: center;
     }
 
-    /* TABLE HEAD BLUE STYLE (Seragam dengan Angsuran & Pinjaman) */
+    /* TABLE HEAD BLUE STYLE */
     .table-ksp-head {
         background: var(--ksp-blue) !important;
         color: white !important;
@@ -218,6 +218,8 @@ $params_cetak = http_build_query([
                             <th class="py-3 text-center">TANGGAL</th>
                             <th class="py-3">NAMA ANGGOTA</th>
                             <th class="py-3">KETERANGAN TRANSAKSI</th>
+                            <!-- Kolom baru: METODE -->
+                            <th class="py-3 text-center">METODE</th>
                             <th class="py-3 text-end px-4">NOMINAL (RP)</th>
                             <th class="py-3 text-center">STRUK</th>
                         </tr>
@@ -246,7 +248,7 @@ $params_cetak = http_build_query([
                         $query = mysqli_query($koneksi, $sql);
 
                         if (mysqli_num_rows($query) == 0) {
-                            echo "<tr><td colspan='6' class='text-center py-5 text-muted'>Tidak ada histori transaksi ditemukan.</td></tr>";
+                            echo "<tr><td colspan='7' class='text-center py-5 text-muted'>Tidak ada histori transaksi ditemukan.</td></tr>";
                         }
 
                         while ($row = mysqli_fetch_assoc($query)) {
@@ -261,6 +263,20 @@ $params_cetak = http_build_query([
                                     <?php echo $is_plus ? 'SETORAN: '.$row['jenis_simpanan'] : 'PENARIKAN TUNAI'; ?>
                                 </span>
                             </td>
+                            
+                            <!-- DATA METODE PEMBAYARAN -->
+                            <td class="text-center">
+                                <?php 
+                                $metode = (isset($row['metode_pembayaran']) && $row['metode_pembayaran'] != '') ? $row['metode_pembayaran'] : 'Tunai'; 
+                                
+                                if ($metode == 'Transfer') {
+                                    echo '<span class="badge bg-info text-dark px-3 py-2 rounded-pill"><i class="bi bi-bank me-1"></i> Transfer</span>';
+                                } else {
+                                    echo '<span class="badge bg-secondary px-3 py-2 rounded-pill"><i class="bi bi-cash-coin me-1"></i> Tunai</span>';
+                                }
+                                ?>
+                            </td>
+
                             <td class="text-end px-4 fw-bold <?php echo $is_plus ? 'text-success' : 'text-danger'; ?>">
                                 <?php echo ($is_plus ? '+' : '-') . ' ' . rupiah(abs($row['jumlah'])); ?>
                             </td>

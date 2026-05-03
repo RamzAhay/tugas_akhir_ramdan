@@ -146,6 +146,15 @@ $id_pinjaman_get = isset($_GET['id']) ? mysqli_real_escape_string($koneksi, $_GE
                         </div>
                     </div>
 
+                    <!-- Metode Pembayaran -->
+                    <div class="mb-4">
+                        <label class="label-minimal d-block mb-2">Metode Pembayaran</label>
+                        <select name="metode_pembayaran" class="form-select input-clean" required>
+                            <option value="Tunai">Tunai / Cash</option>
+                            <option value="Transfer">Transfer Bank</option>
+                        </select>
+                    </div>
+
                     <!-- Tanggal Pembayaran -->
                     <div class="mb-4">
                         <label class="label-minimal d-block mb-2">Tanggal Pembayaran</label>

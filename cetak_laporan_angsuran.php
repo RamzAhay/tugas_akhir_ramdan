@@ -87,11 +87,11 @@ $pdf->Cell(64, 8, 'SUDAH DIBAYAR', 1, 0, 'C', true);
 $pdf->Cell(63, 8, 'SISA HUTANG', 1, 1, 'C', true);
 
 $pdf->SetFont('Arial', 'B', 11);
-$pdf->Cell(63, 10, rupiah($total_hutang), 1, 0, 'C');
+$pdf->Cell(63, 10, 'Rp ' . number_format($total_hutang, 0, ',', '.'), 1, 0, 'C');
 $pdf->SetTextColor(0, 128, 0); // Hijau
-$pdf->Cell(64, 10, rupiah($sudah_dibayar), 1, 0, 'C');
+$pdf->Cell(64, 10, 'Rp ' . number_format($sudah_dibayar, 0, ',', '.'), 1, 0, 'C');
 $pdf->SetTextColor(220, 53, 69); // Merah
-$pdf->Cell(63, 10, rupiah($sisa_hutang), 1, 1, 'C');
+$pdf->Cell(63, 10, 'Rp ' . number_format($sisa_hutang, 0, ',', '.'), 1, 1, 'C');
 $pdf->SetTextColor(0, 0, 0); // Kembalikan Hitam
 $pdf->Ln(5);
 
@@ -99,10 +99,11 @@ $pdf->Ln(5);
 $pdf->SetFillColor(51, 65, 85); // Slate Dark
 $pdf->SetTextColor(255, 255, 255);
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->Cell(15, 10, 'NO', 1, 0, 'C', true);
-$pdf->Cell(45, 10, 'TANGGAL BAYAR', 1, 0, 'C', true);
-$pdf->Cell(70, 10, 'KETERANGAN', 1, 0, 'C', true);
-$pdf->Cell(60, 10, 'NOMINAL BAYAR', 1, 1, 'C', true);
+$pdf->Cell(10, 10, 'NO', 1, 0, 'C', true);
+$pdf->Cell(35, 10, 'TANGGAL', 1, 0, 'C', true);
+$pdf->Cell(55, 10, 'KETERANGAN', 1, 0, 'C', true);
+$pdf->Cell(45, 10, 'METODE', 1, 0, 'C', true); // Kolom Metode Baru
+$pdf->Cell(45, 10, 'NOMINAL BAYAR', 1, 1, 'C', true);
 
 // --- ISI TABEL RIWAYAT ---
 $pdf->SetTextColor(0, 0, 0);
@@ -114,10 +115,14 @@ $q_list = mysqli_query($koneksi, "SELECT * FROM tb_angsuran_ramdan WHERE id_pinj
 if (mysqli_num_rows($q_list) > 0) {
     $no = 1;
     while ($r = mysqli_fetch_assoc($q_list)) {
-        $pdf->Cell(15, 8, $no, 1, 0, 'C');
-        $pdf->Cell(45, 8, date('d/m/Y', strtotime($r['tanggal_bayar'])), 1, 0, 'C');
-        $pdf->Cell(70, 8, ' Angsuran Ke-' . $no, 1, 0, 'L');
-        $pdf->Cell(60, 8, rupiah($r['jumlah_bayar']), 1, 1, 'R');
+        // Logika default jika kolom metode kosong
+        $metode = (isset($r['metode_pembayaran']) && $r['metode_pembayaran'] != '') ? $r['metode_pembayaran'] : 'Tunai';
+
+        $pdf->Cell(10, 8, $no, 1, 0, 'C');
+        $pdf->Cell(35, 8, date('d/m/Y', strtotime($r['tanggal_bayar'])), 1, 0, 'C');
+        $pdf->Cell(55, 8, ' Angsuran Ke-' . $no, 1, 0, 'L');
+        $pdf->Cell(45, 8, $metode, 1, 0, 'C');
+        $pdf->Cell(45, 8, 'Rp ' . number_format($r['jumlah_bayar'], 0, ',', '.'), 1, 1, 'R');
         $no++;
     }
 } else {
