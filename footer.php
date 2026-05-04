@@ -1,7 +1,7 @@
-</div> <div class="mt-5 text-center text-muted" style="font-size: 14px; margin-bottom: 20px;">
-        <hr>
-        &copy; <?php echo date('Y'); ?> Aplikasi Koperasi Simpan Pinjam.
-    </div>
+</div> <!-- Penutup div container yang dibuka di header.php -->
 
-    </body>
+<!-- Bootstrap 5 JS Bundle (Sangat Penting untuk Dropdown, Modal, dll) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
 </html>

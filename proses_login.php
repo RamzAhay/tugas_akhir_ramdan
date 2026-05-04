@@ -19,9 +19,11 @@ if ($result->num_rows > 0) {
     
     if ($data['id_role'] == 1) {
         $_SESSION['role'] = 'Admin';  // 1 = Admin
+        $_SESSION['id_user'] = $data['id_user'];
         header("location:dashboard_admin.php");
     } else if ($data['id_role'] == 2) {
         $_SESSION['role'] = 'Petugas'; // 2 = Petugas
+        $_SESSION['id_user'] = $data['id_user'];
         header("location:dashboard_petugas.php");
     }
 } else {

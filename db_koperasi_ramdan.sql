@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 30, 2026 at 04:11 AM
+-- Generation Time: May 04, 2026 at 12:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -52,6 +52,7 @@ CREATE TABLE `tb_angsuran_ramdan` (
   `id_angsuran` int(11) NOT NULL,
   `id_pinjaman` int(11) NOT NULL,
   `jumlah_bayar` decimal(15,2) NOT NULL,
+  `metode_pembayaran` enum('Tunai','Transfer') DEFAULT 'Tunai',
   `sisa_pinjaman` decimal(15,2) NOT NULL,
   `tanggal_bayar` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -60,9 +61,8 @@ CREATE TABLE `tb_angsuran_ramdan` (
 -- Dumping data for table `tb_angsuran_ramdan`
 --
 
-INSERT INTO `tb_angsuran_ramdan` (`id_angsuran`, `id_pinjaman`, `jumlah_bayar`, `sisa_pinjaman`, `tanggal_bayar`) VALUES
-(4, 3, 500000.00, 550000.00, '2026-04-29'),
-(5, 3, 550000.00, 0.00, '2026-04-29');
+INSERT INTO `tb_angsuran_ramdan` (`id_angsuran`, `id_pinjaman`, `jumlah_bayar`, `metode_pembayaran`, `sisa_pinjaman`, `tanggal_bayar`) VALUES
+(8, 6, 250000.00, 'Transfer', 0.00, '2026-05-03');
 
 -- --------------------------------------------------------
 
@@ -87,7 +87,7 @@ CREATE TABLE `tb_pinjaman_ramdan` (
 --
 
 INSERT INTO `tb_pinjaman_ramdan` (`id_pinjaman`, `id_anggota`, `jumlah_pinjaman`, `bunga`, `lama_pinjaman`, `total_pinjaman`, `sisa_pinjaman`, `status_pinjaman`, `tanggal_pinjaman`) VALUES
-(3, 1, 1000000.00, 5.00, 2, 1050000.00, 1050000, 'Lunas', '2026-04-29');
+(6, 1, 1000000.00, 10.00, 3, 1100000.00, 850000, 'Disetujui', '2026-05-03');
 
 -- --------------------------------------------------------
 
@@ -119,6 +119,7 @@ CREATE TABLE `tb_simpanan_ramdan` (
   `id_anggota` int(11) NOT NULL,
   `jenis_simpanan` enum('Pokok','Wajib','Sukarela') NOT NULL,
   `jumlah` decimal(15,2) NOT NULL,
+  `metode_pembayaran` enum('Tunai','Transfer') DEFAULT 'Tunai',
   `tanggal` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -126,10 +127,16 @@ CREATE TABLE `tb_simpanan_ramdan` (
 -- Dumping data for table `tb_simpanan_ramdan`
 --
 
-INSERT INTO `tb_simpanan_ramdan` (`id_simpanan`, `id_anggota`, `jenis_simpanan`, `jumlah`, `tanggal`) VALUES
-(1, 1, 'Pokok', 100000.00, '2026-04-03'),
-(2, 1, 'Sukarela', 5000000.00, '2026-04-29'),
-(3, 1, 'Sukarela', -100000.00, '2026-04-29');
+INSERT INTO `tb_simpanan_ramdan` (`id_simpanan`, `id_anggota`, `jenis_simpanan`, `jumlah`, `metode_pembayaran`, `tanggal`) VALUES
+(1, 1, 'Pokok', 100000.00, 'Tunai', '2026-04-03'),
+(2, 1, 'Sukarela', 5000000.00, 'Tunai', '2026-04-29'),
+(3, 1, 'Sukarela', -100000.00, 'Tunai', '2026-04-29'),
+(4, 1, 'Sukarela', 200000.00, 'Tunai', '2026-05-02'),
+(5, 1, 'Sukarela', 200000.00, 'Tunai', '2026-05-02'),
+(6, 1, 'Sukarela', 200000.00, 'Tunai', '2026-05-02'),
+(7, 1, 'Sukarela', 200000.00, 'Tunai', '2026-05-02'),
+(8, 1, 'Sukarela', 200000.00, 'Tunai', '2026-05-02'),
+(9, 1, 'Sukarela', 250000.00, 'Transfer', '2026-05-03');
 
 -- --------------------------------------------------------
 
@@ -212,13 +219,13 @@ ALTER TABLE `tb_anggota_ramdan`
 -- AUTO_INCREMENT for table `tb_angsuran_ramdan`
 --
 ALTER TABLE `tb_angsuran_ramdan`
-  MODIFY `id_angsuran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_angsuran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tb_pinjaman_ramdan`
 --
 ALTER TABLE `tb_pinjaman_ramdan`
-  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tb_role_ramdan`
@@ -230,7 +237,7 @@ ALTER TABLE `tb_role_ramdan`
 -- AUTO_INCREMENT for table `tb_simpanan_ramdan`
 --
 ALTER TABLE `tb_simpanan_ramdan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `tb_user_ramdan`

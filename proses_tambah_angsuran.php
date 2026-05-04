@@ -3,13 +3,18 @@ include 'auth.php';
 include 'koneksi.php';
 
 if (isset($_POST['submit'])) {
-    // Menangkap data dari form di Canvas
+    // 1. Menangkap data dari form (tambah_angsuran.php)
     $id_pinjaman = mysqli_real_escape_string($koneksi, $_POST['id_pinjaman']);
     $tanggal_bayar = mysqli_real_escape_string($koneksi, $_POST['tanggal_bayar']);
-    $jumlah_bayar = mysqli_real_escape_string($koneksi, $_POST['jumlah_bayar']); // Ini angka polos dari hidden input
-    $metode_pembayaran = mysqli_real_escape_string($koneksi, $_POST['metode_pembayaran']); // Tangkap metode pembayaran
+    $metode_pembayaran = mysqli_real_escape_string($koneksi, $_POST['metode_pembayaran']);
+    
+    // Pastikan nominal bayar adalah angka murni (int)
+    $jumlah_bayar = (int)$_POST['jumlah_bayar'];
 
-    // 1. Ambil data sisa pinjaman saat ini sebelum dibayar
+    // Menampilkan header agar SweetAlert2 bisa muncul dengan rapi
+    echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><style>body{font-family:'Poppins', sans-serif; background-color:#f8f9fa; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;}</style></head><body>";
+
+    // 2. Cek sisa hutang saat ini di database sebelum diproses
     $query_cek = mysqli_query($koneksi, "SELECT sisa_pinjaman FROM tb_pinjaman_ramdan WHERE id_pinjaman = '$id_pinjaman'");
     $data_pinjaman = mysqli_fetch_assoc($query_cek);
     
@@ -18,27 +23,32 @@ if (isset($_POST['submit'])) {
         exit();
     }
 
-    $sisa_lama = $data_pinjaman['sisa_pinjaman'];
+    $sisa_sebelumnya = $data_pinjaman['sisa_pinjaman'];
 
-    // 2. Hitung sisa pinjaman baru
-    $sisa_baru = $sisa_lama - $jumlah_bayar;
-
-    // Validasi keamanan: Sisa tidak boleh minus
-    if ($sisa_baru < 0) {
-        echo "<script>alert('Gagal! Jumlah bayar melebihi sisa hutang.'); window.history.back();</script>";
+    // 3. Validasi: Jangan biarkan bayar lebih dari sisa hutang
+    if ($jumlah_bayar > $sisa_sebelumnya) {
+        echo "<script>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Pembayaran Ditolak',
+                text: 'Nominal bayar (Rp " . number_format($jumlah_bayar,0,',','.') . ") melebihi sisa hutang (Rp " . number_format($sisa_sebelumnya,0,',','.') . ")',
+                confirmButtonColor: '#0d6efd'
+            }).then(() => { window.history.back(); });
+        </script>";
         exit();
     }
 
-    // 3. Simpan data ke tabel angsuran
-    // Kolom disesuaikan: id_pinjaman, tanggal_bayar, jumlah_bayar, metode_pembayaran
+    // 4. Masukkan data ke tabel angsuran
     $sql_ins = "INSERT INTO tb_angsuran_ramdan (id_pinjaman, tanggal_bayar, jumlah_bayar, metode_pembayaran) 
                 VALUES ('$id_pinjaman', '$tanggal_bayar', '$jumlah_bayar', '$metode_pembayaran')";
     
     $query_ins = mysqli_query($koneksi, $sql_ins);
 
     if ($query_ins) {
-        // 4. Update sisa pinjaman di tabel pinjaman (Logika Utama)
-        // Jika sisa baru adalah 0 atau kurang, status otomatis jadi 'Lunas'
+        // 5. Update data di tabel pinjaman (Hitung sisa hutang baru)
+        $sisa_baru = $sisa_sebelumnya - $jumlah_bayar;
+        
+        // Jika sisa baru adalah 0, maka status berubah jadi 'Lunas'
         $status_baru = ($sisa_baru <= 0) ? 'Lunas' : 'Disetujui';
         
         $sql_upd = "UPDATE tb_pinjaman_ramdan SET 
@@ -46,19 +56,35 @@ if (isset($_POST['submit'])) {
                     status_pinjaman = '$status_baru' 
                     WHERE id_pinjaman = '$id_pinjaman'";
         
-        $query_upd = mysqli_query($koneksi, $sql_upd);
+        mysqli_query($koneksi, $sql_upd);
 
-        if ($query_upd) {
-            echo "<script>alert('Pembayaran Berhasil! Sisa pinjaman diperbarui.'); window.location='data_angsuran.php';</script>";
-        } else {
-            echo "Gagal Update Sisa Pinjaman: " . mysqli_error($koneksi);
-        }
+        // Berikan notifikasi sukses
+        echo "<script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Angsuran berhasil dicatat. Sisa hutang: Rp " . number_format($sisa_baru, 0, ',', '.') . "',
+                showConfirmButton: false,
+                timer: 2500
+            }).then(() => {
+                window.location.href = 'riwayat_angsuran.php?id=$id_pinjaman';
+            });
+        </script>";
     } else {
-        echo "Gagal Simpan Riwayat Angsuran: " . mysqli_error($koneksi);
+        // Jika terjadi error pada query database
+        echo "<script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error Database',
+                text: '" . mysqli_error($koneksi) . "',
+                confirmButtonColor: '#d33'
+            }).then(() => { window.history.back(); });
+        </script>";
     }
+    echo "</body></html>";
 } else {
-    // Jika diakses tanpa submit form
-    header("Location: tambah_angsuran.php");
+    // Jika file diakses langsung tanpa lewat form
+    header("Location: data_angsuran.php");
     exit();
 }
 ?>

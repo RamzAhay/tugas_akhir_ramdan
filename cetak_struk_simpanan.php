@@ -43,7 +43,7 @@ $metode    = (isset($data['metode_pembayaran']) && $data['metode_pembayaran'] !=
  * PROSES GENERATE PDF
  * Ukuran: 80mm (lebar thermal) x 110mm (tinggi) - Sedikit dipanjangkan
  */
-$pdf = new FPDF('P', 'mm', array(80, 110));
+$pdf = new fpdf('P', 'mm', array(80, 110));
 $pdf->SetMargins(5, 5, 5);
 $pdf->SetAutoPageBreak(false);
 $pdf->AddPage();
