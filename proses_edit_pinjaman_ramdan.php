@@ -1,0 +1,100 @@
+<?php
+include 'auth_ramdan.php';
+include 'koneksi_ramdan.php';
+
+// Include SweetAlert2 library
+echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+
+// =========================================================================
+// WADAH HTML UNTUK SWEETALERT (Agar layar tidak blank saat alert muncul)
+// =========================================================================
+echo "<!DOCTYPE html><html><head>";
+echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+echo "<style>body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }</style>";
+echo "</head><body>";
+
+if (isset($_POST['submit'])) {
+    $id_pinjaman_ramdan = $_POST['id_pinjaman_ramdan'];
+    $tanggal_pinjaman_ramdan = $_POST['tanggal_pinjaman_ramdan'];
+    $jumlah_pinjaman_ramdan = $_POST['jumlah_pinjaman_ramdan'];
+    $lama_pinjaman_ramdan = $_POST['lama_pinjaman_ramdan']; 
+    $bunga_persen = $_POST['bunga_ramdan']; 
+
+    // Ambil ID Anggota dari pinjaman yang sedang diedit
+    $query_pinjaman = mysqli_query($koneksi, "SELECT id_anggota_ramdan FROM tb_pinjaman_ramdan WHERE id_pinjaman_ramdan = '$id_pinjaman_ramdan'");
+    $data_pinjaman = mysqli_fetch_assoc($query_pinjaman);
+    $id_anggota_ramdan = $data_pinjaman['id_anggota_ramdan'];
+
+    // Hitung total simpanan anggota tersebut
+    $query_simpanan = mysqli_query($koneksi, "SELECT SUM(jumlah_ramdan) as total_saldo FROM tb_simpanan_ramdan WHERE id_anggota_ramdan = '$id_anggota_ramdan'");
+    $data_simpanan = mysqli_fetch_assoc($query_simpanan);
+    $total_simpanan = $data_simpanan['total_saldo'] ? $data_simpanan['total_saldo'] : 0;
+
+    // Validasi Limit Maksimal Dinamis (3x Total Simpanan)
+    $limit_maksimal = $total_simpanan * 3;
+
+    if ($jumlah_pinjaman_ramdan > $limit_maksimal) {
+        $limit_rp = rupiah($limit_maksimal);
+        $simpanan_rp = rupiah($total_simpanan);
+        echo "<script>
+            Swal.fire({
+                title: 'Gagal!',
+                html: 'Maksimal pengajuan pinjaman adalah 3x total simpanan: <strong>$limit_rp</strong><br>Total simpanan anggota saat ini: <strong>$simpanan_rp</strong>',
+                icon: 'error',
+                confirmButtonText: 'Kembali'
+            }).then(() => {
+                window.history.back();
+            });
+        </script>";
+        exit();
+    }
+
+    // Hitung ulang karena nominal atau bunga_ramdan bisa saja diubah
+    $bunga_nominal = ($jumlah_pinjaman_ramdan * $bunga_persen) / 100;
+    $total_pinjaman_ramdan = $jumlah_pinjaman_ramdan + $bunga_nominal;
+    // Sisa pinjaman mengikuti total karena belum ada angsuran (statusnya masih diajukan)
+    $sisa_pinjaman_ramdan = $total_pinjaman_ramdan;
+
+    $query = "UPDATE tb_pinjaman_ramdan SET 
+              tanggal_pinjaman_ramdan = '$tanggal_pinjaman_ramdan',
+              jumlah_pinjaman_ramdan = '$jumlah_pinjaman_ramdan',
+              bunga_ramdan = '$bunga_persen',
+              lama_pinjaman_ramdan = '$lama_pinjaman_ramdan',
+              total_pinjaman_ramdan = '$total_pinjaman_ramdan',
+              sisa_pinjaman_ramdan = '$sisa_pinjaman_ramdan'
+              WHERE id_pinjaman_ramdan = '$id_pinjaman_ramdan' AND status_pinjaman_ramdan = 'Diajukan'";
+
+    $result = mysqli_query($koneksi, $query);
+
+    if ($result) {
+        echo "<script>
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Data Pengajuan Pinjaman Berhasil Diperbarui!',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location='data_pinjaman_ramdan.php';
+            });
+        </script>";
+    } else {
+        echo "<script>
+            Swal.fire({
+                title: 'Gagal!',
+                text: 'Gagal mengubah data: " . mysqli_error($koneksi) . "',
+                icon: 'error',
+                confirmButtonText: 'Kembali'
+            }).then(() => {
+                window.history.back();
+            });
+        </script>";
+    }
+} else {
+    header("Location: data_pinjaman_ramdan.php");
+    exit();
+}
+
+echo "</body></html>";
+?>
